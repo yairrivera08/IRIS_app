@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">IRISTest</string>
+    <string name="propsphone">Propiedades telefono</string>
 </resources>
