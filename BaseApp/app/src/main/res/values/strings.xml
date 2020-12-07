@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BaseApp</string>
+    <string name="mainAct_buttonPress">Press Me!</string>
+    <string name="mainAct_StringText">Soy el texto principal</string>
+</resources>
