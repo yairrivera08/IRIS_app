@@ -35,8 +35,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,6 +44,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.eycr.baseapp.DepthCameraManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,10 +72,13 @@ public class MainActivity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
+    private DepthCameraManager depthCamMg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         textureView =(TextureView) findViewById(R.id.textureView);
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton =(Button) findViewById(R.id.buttonCamera);
@@ -93,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                 ma_Text.setText("He sido presionado");
             }
         });
+
+        depthCamMg = new DepthCameraManager(MainActivity.this);
+
+
     }
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
@@ -170,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
             Size[] jpegSizes = null;
             if(characteristics != null){
-                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
+                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.DEPTH16);
             }
             int width = 640;
             int height = 480;
@@ -178,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
             }
-            ImageReader reader = ImageReader.newInstance(width,height,ImageFormat.JPEG,1);
+            ImageReader reader = ImageReader.newInstance(width,height,ImageFormat.DEPTH16,1);
             List<Surface> outputSurfaces = new ArrayList<Surface>(2);
             outputSurfaces.add(reader.getSurface());
             outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
@@ -188,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
             //Now we set the orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION,ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+            final File file = new File(Environment.getRootDirectory()+"/pic.jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -281,10 +288,19 @@ public class MainActivity extends AppCompatActivity {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         Log.e(TAG,"Is Camera open?");
         try{
-            cameraId = manager.getCameraIdList()[0];
+            cameraId = manager.getCameraIdList()[4];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+            /*for(int i = 0; i < characteristics.getKeys().size();i++){
+                Log.e(TAG, "CAMERA ["+cameraId+"] Characteristics "+ String.valueOf(characteristics.getKeys().get(i)));
+            }*/
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
+            Size[] mapsizes = map.getOutputSizes(ImageFormat.DEPTH_JPEG);
+
+            for(int i=0;i<mapsizes.length;i++){
+                Log.e(TAG,"Map sizes "+mapsizes[i]);
+            }
+
+            //imageDimension = mapsizes[0];
             //Ask for camera and storage permission
             if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CAMERA_PERMISSION);
@@ -292,7 +308,9 @@ public class MainActivity extends AppCompatActivity {
             }
             manager.openCamera(cameraId,stateCallback,null);
         }catch(CameraAccessException e){
-            e.printStackTrace();
+            for(int i = 0; i < e.getStackTrace().length; i++){
+                System.out.println(e.getStackTrace()[i].toString());
+            }
         }
         Log.e(TAG,"openCamera");
     }
