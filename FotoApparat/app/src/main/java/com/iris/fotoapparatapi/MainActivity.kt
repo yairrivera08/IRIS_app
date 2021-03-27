@@ -1,24 +1,35 @@
 package com.iris.fotoapparatapi
 
 import android.Manifest
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Camera
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
-import io.fotoapparat.parameter.Flash
 import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.selector.*
 import io.fotoapparat.view.CameraView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.util.*
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toObservable
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,13 +61,67 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun takePhoto(){
+
         if(hasNoPermissions()){
             requestPermission()
         }else{
-            fotoapparat
+            /*fotoapparat
                 ?.takePicture()
-                ?.saveToFile(dest)
+                ?.saveToFile(dest)*/
+            val photoOg = fotoapparat?.takePicture()
+            photoOg?.toBitmap()?.whenAvailable {
+                bitmapPhoto ->
+                    if(bitmapPhoto != null){
+                        //val uri = bmpToFile(bitmapPhoto.bitmap)
+                            /*Llamamos nuestras utilidades para obtener los 4 canales*/
+                            val bmpChannel: ImageUtilities = ImageUtilities(bitmapPhoto.bitmap)
+                            bmpChannel
+                        val name:String = UUID.randomUUID().toString()
+                        saveImage(bitmapPhoto.bitmap,name+"Assembly")
+                        //saveImage(bmpChannel.getA(),name+"AssemblyAlpha")
+                        saveImage(bmpChannel.getR(),name+"AssemblyRed")
+                        //saveImage(bmpChannel.getG(),name+"AssemblyGreen")
+                        //saveImage(bmpChannel.getB(),name+"AssemblyBlue")
+                        //toast("Bitmap Guardado en $uri")
+                    }
+            }
         }
+    }
+
+    private fun bmpToFile(bmp : Bitmap):Uri{
+        val wrapper = ContextWrapper(applicationContext)
+        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
+        file = File(file,"${UUID.randomUUID()}.jpg")
+        try {
+            val stream:OutputStream = FileOutputStream(file)
+            bmp.compress(Bitmap.CompressFormat.JPEG,100,stream)
+            stream.flush()
+            stream.close()
+        }catch (e:IOException){
+            e.printStackTrace()
+        }
+        return Uri.parse(file.absolutePath)
+    }
+    fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    }
+    // Method to save an image to gallery and return uri
+    private fun saveImage(bmp : Bitmap, title: String){
+
+        // Get the bitmap from drawable object
+        val bitmap = bmp.rotate(90f)
+
+        // Save image to gallery
+        val savedImageURL = MediaStore.Images.Media.insertImage(
+            contentResolver,
+            bitmap,
+            title,
+            "Image of $title"
+        )
+
+        /* Parse the gallery image url to uri
+        return Uri.parse(savedImageURL)*/
     }
 
     private fun switchCamera(){
@@ -130,6 +195,11 @@ class MainActivity : AppCompatActivity() {
 
     fun requestPermission(){
         ActivityCompat.requestPermissions(this,permissions,0)
+    }
+
+    // Extension function to show toast message
+    fun Context.toast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     enum class CameraState{
