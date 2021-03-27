@@ -74,12 +74,17 @@ class MainActivity : AppCompatActivity() {
                     if(bitmapPhoto != null){
                         //val uri = bmpToFile(bitmapPhoto.bitmap)
                             /*Llamamos nuestras utilidades para obtener los 4 canales*/
-                            val bmpChannel: ImageUtilities = ImageUtilities(bitmapPhoto.bitmap)
-                            bmpChannel
+                            val bmpChannel = BitmapUtilities(bitmapPhoto.bitmap)
+
                         val name:String = UUID.randomUUID().toString()
                         saveImage(bitmapPhoto.bitmap,name+"Assembly")
                         //saveImage(bmpChannel.getA(),name+"AssemblyAlpha")
-                        saveImage(bmpChannel.getR(),name+"AssemblyRed")
+                        try{
+                            saveImage(bmpChannel.spliceR(),name+"AssemblyRed")
+                        }catch (e:IOException){
+                            e.printStackTrace()
+                        }
+
                         //saveImage(bmpChannel.getG(),name+"AssemblyGreen")
                         //saveImage(bmpChannel.getB(),name+"AssemblyBlue")
                         //toast("Bitmap Guardado en $uri")

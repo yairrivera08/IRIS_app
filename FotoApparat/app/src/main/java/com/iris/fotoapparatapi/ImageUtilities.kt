@@ -1,6 +1,7 @@
 package com.iris.fotoapparatapi
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Log
 
 class ImageUtilities(val bmp: Bitmap) {
@@ -17,15 +18,18 @@ class ImageUtilities(val bmp: Bitmap) {
         return bmpA
     }
     fun getR(): Bitmap{
-        val bmpR = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888)
-        for(i in 0 until width){
-            for(j in 0 until height){
-                Log.i("ARGB"," [$i,$j]=${bmp.getColor(i,j).toArgb()}")
-                Log.i("R CHANNEL"," [$i,$j]=${bmp.getColor(i,j).red()}")
-                bmpR.setPixel(i,j,bmp.getColor(i,j).red().toInt()*10)
+        var bmpR = bmp
 
-            }
-        }
+        //for(i in 0 until width){
+          //  for(j in 0 until height){
+                //Log.i("ARGB"," [$i,$j]=${bmp.getColor(i,j).toArgb()}")
+                //Log.i("R CHANNEL"," [$i,$j]=${bmp.getColor(i,j).red()}")
+                bmpR.eraseColor(Color.GREEN)
+                bmpR.eraseColor(Color.BLUE)
+                bmpR.eraseColor(Color.TRANSPARENT)
+
+           // }
+        //}
         return bmpR
     }
     fun getG(): Bitmap{
