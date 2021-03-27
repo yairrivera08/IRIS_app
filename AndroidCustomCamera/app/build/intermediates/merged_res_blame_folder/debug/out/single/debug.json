@@ -1,0 +1,182 @@
+[
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_camera.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-hdpi\\ic_camera.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_camera_rotation.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-mdpi\\ic_camera_rotation.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_back.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-hdpi\\ic_back.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_custom_camera_ui.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\layout\\activity_custom_camera_ui.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_flash_auto.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xxhdpi\\ic_flash_auto.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_camera.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xxhdpi\\ic_camera.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_camera.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-mdpi\\ic_camera.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_flash_off.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-mdpi\\ic_flash_off.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_flash_off.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xhdpi\\ic_flash_off.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_flash_off.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xxhdpi\\ic_flash_off.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_launcher_background.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi_ic_back.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-anydpi\\ic_back.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_camera_rotation.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xhdpi\\ic_camera_rotation.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_flash_on.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xxhdpi\\ic_flash_on.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_flash_on.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-hdpi\\ic_flash_on.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_camera_rotation.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-hdpi\\ic_camera_rotation.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v24\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_camera.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xhdpi\\ic_camera.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi_ic_flash_on.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-anydpi\\ic_flash_on.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi_ic_flash_auto.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-anydpi\\ic_flash_auto.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi_ic_flash_off.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-anydpi\\ic_flash_off.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_back.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xxhdpi\\ic_back.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi_ic_camera.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-anydpi\\ic_camera.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_flash_on.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xhdpi\\ic_flash_on.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_flash_on.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-mdpi\\ic_flash_on.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_flash_auto.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xhdpi\\ic_flash_auto.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_flash_auto.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-hdpi\\ic_flash_auto.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_flash_auto.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-mdpi\\ic_flash_auto.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi_ic_camera_rotation.xml.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-anydpi\\ic_camera_rotation.xml"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_camera_rotation.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xxhdpi\\ic_camera_rotation.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_back.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-xhdpi\\ic_back.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_back.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-mdpi\\ic_back.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_flash_off.png.flat",
+        "source": "D:\\GIT\\IRIS_app\\AndroidCustomCamera\\app\\src\\main\\res\\drawable-hdpi\\ic_flash_off.png"
+    }
+]
