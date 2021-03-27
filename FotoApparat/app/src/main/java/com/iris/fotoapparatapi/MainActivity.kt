@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -80,7 +81,22 @@ class MainActivity : AppCompatActivity() {
                         saveImage(bitmapPhoto.bitmap,name+"Assembly")
                         //saveImage(bmpChannel.getA(),name+"AssemblyAlpha")
                         try{
+                            Log.i("Splice Red","Begin")
                             saveImage(bmpChannel.spliceR(),name+"AssemblyRed")
+                            Log.i("Splice Red","End")
+                            Log.i("Splice Green","Begin")
+                            saveImage(bmpChannel.spliceG(),name+"AssemblyGreen")
+                            Log.i("Splice Green","End")
+                        }catch (e:IOException){
+                            e.printStackTrace()
+                        }
+                        try {
+                            Log.i("Splice Blue","Begin")
+                            saveImage(bmpChannel.spliceB(), name + "AssemblyBlue")
+                            Log.i("Splice Blue","End")
+                            Log.i("Splice Alpha","Begin")
+                            saveImage(bmpChannel.spliceA(), name + "AssemblyAlpha")
+                            Log.i("Splice Alpha","End")
                         }catch (e:IOException){
                             e.printStackTrace()
                         }
