@@ -34,6 +34,15 @@ public class BitmapUtilities {
             }
         }
     }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
     public Bitmap spliceR(){
         Bitmap bmpR = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
         for (int x = 0; x < bitmap.getWidth(); x++)

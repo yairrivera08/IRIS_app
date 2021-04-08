@@ -6,14 +6,15 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.fotoapparat.Fotoapparat
@@ -24,13 +25,13 @@ import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.selector.*
 import io.fotoapparat.view.CameraView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toObservable
+import kotlin.system.measureTimeMillis
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,7 +44,9 @@ class MainActivity : AppCompatActivity() {
     var fotoapparatState : FotoapparatState? = null
     var cameraStatus : CameraState? = null
     var flashState: FlashState? = null
-
+    val parentJob = Job()
+    val coroutineScope = CoroutineScope(Dispatchers.Main + parentJob)
+    var bmpChannel : BitmapUtilities ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,27 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun Splicer(channel: Int): Deferred<Bitmap> =
+        coroutineScope.async(Dispatchers.Main){
+            var bmp = Bitmap.createBitmap(bmpChannel!!.getBitmap().width,bmpChannel!!.getBitmap().height,Bitmap.Config.ARGB_8888)
+            when(channel){
+                0 -> if (bmpChannel != null) {
+                    bmp =  bmpChannel!!.spliceR()
+                }
+                1 -> if (bmpChannel != null) {
+                    bmp =  bmpChannel!!.spliceG()
+                }
+                2 -> if (bmpChannel != null) {
+                    bmp =  bmpChannel!!.spliceB()
+                }
+                3 -> if (bmpChannel != null) {
+                    bmp =  bmpChannel!!.spliceA()
+                }
+            }
+            return@async bmp
+
+        }
+
     private fun takePhoto(){
 
         if(hasNoPermissions()){
@@ -74,29 +98,32 @@ class MainActivity : AppCompatActivity() {
                 bitmapPhoto ->
                     if(bitmapPhoto != null){
                         //val uri = bmpToFile(bitmapPhoto.bitmap)
-                            /*Llamamos nuestras utilidades para obtener los 4 canales*/
-                            val bmpChannel = BitmapUtilities(bitmapPhoto.bitmap)
-
                         val name:String = UUID.randomUUID().toString()
                         saveImage(bitmapPhoto.bitmap,name+"Assembly")
                         //saveImage(bmpChannel.getA(),name+"AssemblyAlpha")
                         try{
-                            Log.i("Splice Red","Begin")
-                            saveImage(bmpChannel.spliceR(),name+"AssemblyRed")
-                            Log.i("Splice Red","End")
-                            Log.i("Splice Green","Begin")
+                            /*Llamamos nuestras utilidades para obtener los 4 canales*/
+                            val exeTime = measureTimeMillis {
+                                coroutineScope.launch(Dispatchers.Main) {
+                                    bmpChannel = BitmapUtilities(bitmapPhoto.bitmap)
+                                    saveImage(Splicer(0).await(), name + "AssemblyRed")
+                                    saveImage(Splicer(1).await(), name + "AssemblyGreen")
+                                    saveImage(Splicer(2).await(), name + "AssemblyBlue")
+                                    saveImage(Splicer(3).await(), name + "AssemblyAlpha")
+
+                                }
+                            }
+                            Log.i("Exec Time -->", "$exeTime")
+                            /*Log.i("Splice Green","Begin")
+
                             saveImage(bmpChannel.spliceG(),name+"AssemblyGreen")
                             Log.i("Splice Green","End")
-                        }catch (e:IOException){
-                            e.printStackTrace()
-                        }
-                        try {
                             Log.i("Splice Blue","Begin")
                             saveImage(bmpChannel.spliceB(), name + "AssemblyBlue")
                             Log.i("Splice Blue","End")
                             Log.i("Splice Alpha","Begin")
                             saveImage(bmpChannel.spliceA(), name + "AssemblyAlpha")
-                            Log.i("Splice Alpha","End")
+                            Log.i("Splice Alpha","End")*/
                         }catch (e:IOException){
                             e.printStackTrace()
                         }
