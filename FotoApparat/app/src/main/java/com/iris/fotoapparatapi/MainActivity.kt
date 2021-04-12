@@ -106,10 +106,14 @@ class MainActivity : AppCompatActivity() {
                             val exeTime = measureTimeMillis {
                                 coroutineScope.launch(Dispatchers.Main) {
                                     bmpChannel = BitmapUtilities(bitmapPhoto.bitmap)
-                                    saveImage(Splicer(0).await(), name + "AssemblyRed")
-                                    saveImage(Splicer(1).await(), name + "AssemblyGreen")
-                                    saveImage(Splicer(2).await(), name + "AssemblyBlue")
-                                    saveImage(Splicer(3).await(), name + "AssemblyAlpha")
+                                    val red = Splicer(0).await()
+                                    val green = Splicer(1).await()
+                                    val blue = Splicer(2).await()
+                                    val alpha = Splicer(3).await()
+                                    saveImage(red, name + "AssemblyRed")
+                                    saveImage(green, name + "AssemblyGreen")
+                                    saveImage(blue, name + "AssemblyBlue")
+                                    saveImage(alpha, name + "AssemblyAlpha")
 
                                 }
                             }
