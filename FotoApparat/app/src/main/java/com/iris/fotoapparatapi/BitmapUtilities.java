@@ -9,24 +9,19 @@ public class BitmapUtilities {
 
     int width;
     int height;
+
     public BitmapUtilities(Bitmap bmpOg){
         this.bitmap = bmpOg;
         width = bmpOg.getWidth();
         height = bmpOg.getHeight();
-        //spliceChannels();
-
     }
     private void spliceChannels(){
         for (int x = 0; x < bitmap.getWidth(); x++)
         {
             for (int y = 0; y < bitmap.getHeight(); y++)
             {
-                /*bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 24 );
-                bmpG.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 16);
-                bmpB.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 8);
-                bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xFF));*/
                 int color = bitmap.getColor(x,y).toArgb();
-                int A = (color >> 24) & 0xff; // or color >>> 24
+                int A = (color >> 24) & 0xff; //Alpha siempre se necesita para evitar transparencias
                 int R = (color >> 16) & 0xff;
                 int G = (color >>  8) & 0xff;
                 int B = (color      ) & 0xff;
@@ -49,17 +44,11 @@ public class BitmapUtilities {
         {
             for (int y = 0; y < bitmap.getHeight(); y++)
             {
-                /*bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 24 );
-                bmpG.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 16);
-                bmpB.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 8);
-                bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xFF));*/
                 int color = bitmap.getColor(x,y).toArgb();
                 int A = (color >> 24) & 0xff; // or color >>> 24
                 int R = (color >> 16) & 0xff;
                 int mask = Color.argb(A,R,0,0);
-                //Log.d("ARGB["+color+"]","[R="+R+"]");
                 bmpR.setPixel(x, y, mask);
-                //Log.d("ARGB JAVA","[A="+A+"],[R="+R+"],[G="+G+"],[B="+B+"]");
             }
         }
         return bmpR;
@@ -70,17 +59,11 @@ public class BitmapUtilities {
         {
             for (int y = 0; y < bitmap.getHeight(); y++)
             {
-                /*bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 24 );
-                bmpG.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 16);
-                bmpB.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 8);
-                bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xFF));*/
                 int color = bitmap.getColor(x,y).toArgb();
                 int A = (color >> 24) & 0xff; // or color >>> 24
                 int G = (color >>  8) & 0xff;
                 int mask = Color.argb(A,0,G,0);
-                //Log.d("ARGB["+color+"]","[R="+R+"]");
                 bmpG.setPixel(x, y, mask);
-                //Log.d("ARGB JAVA","[A="+A+"],[R="+R+"],[G="+G+"],[B="+B+"]");
             }
         }
         return bmpG;
@@ -91,17 +74,11 @@ public class BitmapUtilities {
         {
             for (int y = 0; y < bitmap.getHeight(); y++)
             {
-                /*bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 24 );
-                bmpG.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 16);
-                bmpB.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 8);
-                bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xFF));*/
                 int color = bitmap.getColor(x,y).toArgb();
                 int A = (color >> 24) & 0xff; // or color >>> 24
                 int B = (color      ) & 0xff;
                 int mask = Color.argb(A,0,0,B);
-                //Log.d("ARGB["+color+"]","[R="+R+"]");
                 bmpB.setPixel(x, y, mask);
-                //Log.d("ARGB JAVA","[A="+A+"],[R="+R+"],[G="+G+"],[B="+B+"]");
             }
         }
         return bmpB;
@@ -112,16 +89,10 @@ public class BitmapUtilities {
         {
             for (int y = 0; y < bitmap.getHeight(); y++)
             {
-                /*bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 24 );
-                bmpG.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 16);
-                bmpB.setPixel(x, y, (bitmap.getPixel(x, y) & 0xff) << 8);
-                bmpR.setPixel(x, y, (bitmap.getPixel(x, y) & 0xFF));*/
                 int color = bitmap.getColor(x,y).toArgb();
                 int A = (color >> 24) & 0xff; // or color >>> 24
                 int mask = Color.argb(A,0,0,0);
-                //Log.d("ARGB["+color+"]","[R="+R+"]");
                 bmpA.setPixel(x, y, mask);
-                //Log.d("ARGB JAVA","[A="+A+"],[R="+R+"],[G="+G+"],[B="+B+"]");
             }
         }
         return bmpA;

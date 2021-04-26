@@ -1,268 +1,219 @@
-package com.iris.fotoapparatapi
+package com.iris.fotoapparatapi;
 
-import android.Manifest
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
+import android.view.View
+import android.widget.CompoundButton
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
+import io.fotoapparat.configuration.UpdateConfiguration
 import io.fotoapparat.log.logcat
-import io.fotoapparat.log.loggers
-import io.fotoapparat.parameter.ScaleType
+import io.fotoapparat.parameter.Flash
+import io.fotoapparat.parameter.Zoom
+import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
-import io.fotoapparat.view.CameraView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
-import java.util.*
-import kotlin.system.measureTimeMillis
-
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
-    val permissions = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    var fotoapparat: Fotoapparat? = null
-    var fileName = "AssemblyRequired"
-    val sd = Environment.getExternalStorageDirectory()
-    val dest = File(sd,fileName)
-    var fotoapparatState : FotoapparatState? = null
-    var cameraStatus : CameraState? = null
-    var flashState: FlashState? = null
-    val parentJob = Job()
-    val coroutineScope = CoroutineScope(Dispatchers.Main + parentJob)
-    var bmpChannel : BitmapUtilities ?= null
+    private val permissionsDelegate = PermissionsDelegate(this)
+
+    private var permissionsGranted: Boolean = false
+    private var activeCamera: Camera = Camera.Back
+
+    private lateinit var fotoapparat: Fotoapparat
+    private lateinit var cameraZoom: Zoom.VariableZoom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        createFotoapparat()
+        permissionsGranted = permissionsDelegate.hasCameraPermission()
 
-        cameraStatus = CameraState.BACK
-        flashState = FlashState.OFF
-        fotoapparatState = FotoapparatState.OFF
-
-        fab_camera.setOnClickListener { takePhoto() }
-        fab_flash.setOnClickListener { changeFlashState() }
-        fab_switch_camera.setOnClickListener { switchCamera() }
-
-    }
-
-    private fun Splicer(channel: Int): Deferred<Bitmap> =
-        coroutineScope.async(Dispatchers.Main){
-            var bmp = Bitmap.createBitmap(bmpChannel!!.getBitmap().width,bmpChannel!!.getBitmap().height,Bitmap.Config.ARGB_8888)
-            when(channel){
-                0 -> if (bmpChannel != null) {
-                    bmp =  bmpChannel!!.spliceR()
-                }
-                1 -> if (bmpChannel != null) {
-                    bmp =  bmpChannel!!.spliceG()
-                }
-                2 -> if (bmpChannel != null) {
-                    bmp =  bmpChannel!!.spliceB()
-                }
-                3 -> if (bmpChannel != null) {
-                    bmp =  bmpChannel!!.spliceA()
-                }
-            }
-            return@async bmp
-
+        if (permissionsGranted) {
+            cameraView.visibility = View.VISIBLE
+        } else {
+            permissionsDelegate.requestCameraPermission()
         }
-
-    private fun takePhoto(){
-
-        if(hasNoPermissions()){
-            requestPermission()
-        }else{
-            /*fotoapparat
-                ?.takePicture()
-                ?.saveToFile(dest)*/
-            val photoOg = fotoapparat?.takePicture()
-            photoOg?.toBitmap()?.whenAvailable {
-                bitmapPhoto ->
-                    if(bitmapPhoto != null){
-                        //val uri = bmpToFile(bitmapPhoto.bitmap)
-                        val name:String = UUID.randomUUID().toString()
-                        saveImage(bitmapPhoto.bitmap,name+"Assembly")
-                        //saveImage(bmpChannel.getA(),name+"AssemblyAlpha")
-                        try{
-                            /*Llamamos nuestras utilidades para obtener los 4 canales*/
-                            val exeTime = measureTimeMillis {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    bmpChannel = BitmapUtilities(bitmapPhoto.bitmap)
-                                    val red = Splicer(0).await()
-                                    val green = Splicer(1).await()
-                                    val blue = Splicer(2).await()
-                                    val alpha = Splicer(3).await()
-                                    saveImage(red, name + "AssemblyRed")
-                                    saveImage(green, name + "AssemblyGreen")
-                                    saveImage(blue, name + "AssemblyBlue")
-                                    saveImage(alpha, name + "AssemblyAlpha")
-
-                                }
-                            }
-                            Log.i("Exec Time -->", "$exeTime")
-                            /*Log.i("Splice Green","Begin")
-
-                            saveImage(bmpChannel.spliceG(),name+"AssemblyGreen")
-                            Log.i("Splice Green","End")
-                            Log.i("Splice Blue","Begin")
-                            saveImage(bmpChannel.spliceB(), name + "AssemblyBlue")
-                            Log.i("Splice Blue","End")
-                            Log.i("Splice Alpha","Begin")
-                            saveImage(bmpChannel.spliceA(), name + "AssemblyAlpha")
-                            Log.i("Splice Alpha","End")*/
-                        }catch (e:IOException){
-                            e.printStackTrace()
-                        }
-
-                        //saveImage(bmpChannel.getG(),name+"AssemblyGreen")
-                        //saveImage(bmpChannel.getB(),name+"AssemblyBlue")
-                        //toast("Bitmap Guardado en $uri")
-                    }
-            }
-        }
-    }
-
-    private fun bmpToFile(bmp : Bitmap):Uri{
-        val wrapper = ContextWrapper(applicationContext)
-        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
-        file = File(file,"${UUID.randomUUID()}.jpg")
-        try {
-            val stream:OutputStream = FileOutputStream(file)
-            bmp.compress(Bitmap.CompressFormat.JPEG,100,stream)
-            stream.flush()
-            stream.close()
-        }catch (e:IOException){
-            e.printStackTrace()
-        }
-        return Uri.parse(file.absolutePath)
-    }
-    fun Bitmap.rotate(degrees: Float): Bitmap {
-        val matrix = Matrix().apply { postRotate(degrees) }
-        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
-    }
-    // Method to save an image to gallery and return uri
-    private fun saveImage(bmp : Bitmap, title: String){
-
-        // Get the bitmap from drawable object
-        val bitmap = bmp.rotate(90f)
-
-        // Save image to gallery
-        val savedImageURL = MediaStore.Images.Media.insertImage(
-            contentResolver,
-            bitmap,
-            title,
-            "Image of $title"
-        )
-
-        /* Parse the gallery image url to uri
-        return Uri.parse(savedImageURL)*/
-    }
-
-    private fun switchCamera(){
-        fotoapparat?.switchTo(
-            lensPosition = if(cameraStatus == CameraState.BACK) front() else back(),
-            cameraConfiguration = CameraConfiguration()
-        )
-        if(cameraStatus == CameraState.BACK) cameraStatus = CameraState.FRONT
-        else cameraStatus = CameraState.BACK
-    }
-
-    private fun changeFlashState(){
-        fotoapparat?.updateConfiguration(
-            CameraConfiguration(
-                flashMode = if(flashState == FlashState.TORCH) off() else torch()
-            )
-        )
-        if(flashState == FlashState.TORCH) flashState = FlashState.OFF
-        else flashState = FlashState.TORCH
-    }
-
-    private fun createFotoapparat(){
-        val cameraView = findViewById<CameraView>(R.id.camera_view)
 
         fotoapparat = Fotoapparat(
-            context = this,
-            view = cameraView,
-            scaleType = ScaleType.CenterCrop,
-            lensPosition = back(),
-            logger = loggers(
-                logcat()
-            ),
-            cameraErrorCallback = {error ->
-                println("Errors in camera: $error")
-            }
+                context = this,
+                view = cameraView,
+                focusView = focusView,
+                logger = logcat(),
+                lensPosition = activeCamera.lensPosition,
+                cameraConfiguration = activeCamera.configuration,
+                cameraErrorCallback = { Log.e(LOGGING_TAG, "Camera error: ", it) }
         )
+
+        capture onClick takePicture()
+        switchCamera onClick changeCamera()
+        torchSwitch onCheckedChanged toggleFlash()
+    }
+
+    private fun takePicture(): () -> Unit = {
+        val photoResult = fotoapparat
+                .autoFocus()
+                .takePicture()
+
+        photoResult
+                .saveToFile(File(
+                        getExternalFilesDir("photos"),
+                        "photo.jpg"
+                ))
+
+        photoResult
+                .toBitmap(scaled(scaleFactor = 0.25f))
+                .whenAvailable { photo ->
+                    photo
+                            ?.let {
+                                Log.i(LOGGING_TAG, "New photo captured. Bitmap length: ${it.bitmap.byteCount}")
+
+                                val imageView = findViewById<ImageView>(R.id.result)
+
+                                imageView.setImageBitmap(it.bitmap)
+                                imageView.rotation = (-it.rotationDegrees).toFloat()
+                            }
+                            ?: Log.e(LOGGING_TAG, "Couldn't capture photo.")
+                }
+    }
+
+    private fun changeCamera(): () -> Unit = {
+        activeCamera = when (activeCamera) {
+            Camera.Front -> Camera.Back
+            Camera.Back -> Camera.Front
+        }
+
+        fotoapparat.switchTo(
+                lensPosition = activeCamera.lensPosition,
+                cameraConfiguration = activeCamera.configuration
+        )
+
+        adjustViewsVisibility()
+
+        torchSwitch.isChecked = false
+
+        Log.i(LOGGING_TAG, "New camera position: ${if (activeCamera is Camera.Back) "back" else "front"}")
+    }
+
+    private fun toggleFlash(): (CompoundButton, Boolean) -> Unit = { _, isChecked ->
+        fotoapparat.updateConfiguration(
+                UpdateConfiguration(
+                        flashMode = if (isChecked) {
+                            firstAvailable(
+                                    torch(),
+                                    off()
+                            )
+                        } else {
+                            off()
+                        }
+                )
+        )
+
+        Log.i(LOGGING_TAG, "Flash is now ${if (isChecked) "on" else "off"}")
     }
 
     override fun onStart() {
         super.onStart()
-        if(hasNoPermissions()){
-            requestPermission()
-        }else{
-            fotoapparat?.start()
-            fotoapparatState = FotoapparatState.ON
+        if (permissionsGranted) {
+            fotoapparat.start()
+            adjustViewsVisibility()
         }
     }
 
-    override fun onStop(){
+    override fun onStop() {
         super.onStop()
-        fotoapparat?.stop()
-        fotoapparatState = FotoapparatState.OFF
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
-            val intent = Intent(baseContext,MainActivity::class.java)
-            startActivity(intent)
-            finish()
+        if (permissionsGranted) {
+            fotoapparat.stop()
         }
     }
 
-    private fun hasNoPermissions():Boolean{
-        return ContextCompat.checkSelfPermission(this,
-        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (permissionsDelegate.resultGranted(requestCode, permissions, grantResults)) {
+            permissionsGranted = true
+            fotoapparat.start()
+            adjustViewsVisibility()
+            cameraView.visibility = View.VISIBLE
+        }
     }
 
-    fun requestPermission(){
-        ActivityCompat.requestPermissions(this,permissions,0)
+    private fun adjustViewsVisibility() {
+        fotoapparat.getCapabilities()
+                .whenAvailable { capabilities ->
+                    capabilities
+                            ?.let {
+                                (it.zoom as? Zoom.VariableZoom)
+                                        ?.let { zoom -> setupZoom(zoom) }
+                                        ?: run { zoomSeekBar.visibility = View.GONE }
+
+                                torchSwitch.visibility = if (it.flashModes.contains(Flash.Torch)) View.VISIBLE else View.GONE
+                            }
+                            ?: Log.e(LOGGING_TAG, "Couldn't obtain capabilities.")
+                }
+
+        switchCamera.visibility = if (fotoapparat.isAvailable(front())) View.VISIBLE else View.GONE
     }
 
-    // Extension function to show toast message
-    fun Context.toast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    private fun setupZoom(zoom: Zoom.VariableZoom) {
+        zoomSeekBar.max = zoom.maxZoom
+        cameraZoom = zoom
+        zoomSeekBar.visibility = View.VISIBLE
+        zoomSeekBar onProgressChanged { updateZoom(zoomSeekBar.progress) }
+        updateZoom(0)
     }
 
-    enum class CameraState{
-        FRONT, BACK
+    private fun updateZoom(progress: Int) {
+        fotoapparat.setZoom(progress.toFloat() / zoomSeekBar.max)
+        val value = cameraZoom.zoomRatios[progress]
+        val roundedValue = ((value.toFloat()) / 10).roundToInt().toFloat() / 10
+        zoomLvl.text = String.format("%.1f ×", roundedValue)
     }
+}
 
-    enum class FlashState{
-        TORCH, OFF
-    }
+private const val LOGGING_TAG = "Fotoapparat Example"
 
-    enum class FotoapparatState{
-        ON, OFF
-    }
+private sealed class Camera(
+        val lensPosition: LensPositionSelector,
+        val configuration: CameraConfiguration
+) {
+
+    object Back : Camera(
+            lensPosition = back(),
+            configuration = CameraConfiguration(
+                    previewResolution = firstAvailable(
+                            wideRatio(highestResolution()),
+                            standardRatio(highestResolution())
+                    ),
+                    previewFpsRange = highestFps(),
+                    flashMode = off(),
+                    focusMode = firstAvailable(
+                            continuousFocusPicture(),
+                            autoFocus()
+                    ),
+                    frameProcessor = {
+                        // Do something with the preview frame
+                    }
+            )
+    )
+
+    object Front : Camera(
+            lensPosition = front(),
+            configuration = CameraConfiguration(
+                    previewResolution = firstAvailable(
+                            wideRatio(highestResolution()),
+                            standardRatio(highestResolution())
+                    ),
+                    previewFpsRange = highestFps(),
+                    flashMode = off(),
+                    focusMode = firstAvailable(
+                            fixed(),
+                            autoFocus()
+                    )
+            )
+    )
 }
