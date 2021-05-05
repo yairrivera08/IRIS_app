@@ -4,30 +4,30 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+
 public class BitmapUtilities {
-    Bitmap bitmap;
+    private Bitmap bitmap;
+    private Bitmap rMap;
+    private Bitmap gMap;
+    private Bitmap bMap;
+    private Bitmap aMap;
+    private Bitmap greyScale;
 
-    int width;
-    int height;
+    private int width;
+    private int height;
 
-    public BitmapUtilities(Bitmap bmpOg){
+    public BitmapUtilities(@NotNull Bitmap bmpOg){
         this.bitmap = bmpOg;
         width = bmpOg.getWidth();
         height = bmpOg.getHeight();
     }
     private void spliceChannels(){
-        for (int x = 0; x < bitmap.getWidth(); x++)
-        {
-            for (int y = 0; y < bitmap.getHeight(); y++)
-            {
-                int color = bitmap.getColor(x,y).toArgb();
-                int A = (color >> 24) & 0xff; //Alpha siempre se necesita para evitar transparencias
-                int R = (color >> 16) & 0xff;
-                int G = (color >>  8) & 0xff;
-                int B = (color      ) & 0xff;
-                Log.d("ARGB JAVA","[A="+A+"],[R="+R+"],[G="+G+"],[B="+B+"]");
-            }
-        }
+
+        rMap = spliceR();
+        gMap = spliceG();
+        bMap = spliceB();
+        aMap = spliceA();
     }
 
     public Bitmap getBitmap() {
