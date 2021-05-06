@@ -1,5 +1,8 @@
 package com.iris.fotoapparatapi;
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,7 +18,8 @@ import io.fotoapparat.parameter.Zoom
 import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
+import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fotoapparat: Fotoapparat
     private lateinit var cameraZoom: Zoom.VariableZoom
+    private var bitmapGroup: ArrayList<String> = ArrayList<String>()
+    private var i : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +59,30 @@ class MainActivity : AppCompatActivity() {
         capture onClick takePicture()
         switchCamera onClick changeCamera()
         torchSwitch onCheckedChanged toggleFlash()
+        procesar onClick { iniciarProcesamiento() }
+    }
+
+    private fun localSaveInApp(fileName:String, bmp:Bitmap){
+        val stream = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.PNG,90,stream)
+        val file:String = fileName
+        val data:ByteArray = stream.toByteArray()
+        val fileOutputStream: FileOutputStream
+        try {
+            fileOutputStream = openFileOutput(file, Context.MODE_PRIVATE)
+            fileOutputStream.write(data)
+            i++
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    private fun iniciarProcesamiento() {
+
+        val intent = Intent(this, activity_Procesando::class.java).apply {
+            putExtra("bitmaps",bitmapGroup)
+        }
+        startActivity(intent)
     }
 
     private fun takePicture(): () -> Unit = {
@@ -60,11 +90,11 @@ class MainActivity : AppCompatActivity() {
                 .autoFocus()
                 .takePicture()
 
-        photoResult
+        /*photoResult
                 .saveToFile(File(
                         getExternalFilesDir("photos"),
                         "photo.jpg"
-                ))
+                ))*/
 
         photoResult
                 .toBitmap(scaled(scaleFactor = 0.25f))
@@ -79,6 +109,18 @@ class MainActivity : AppCompatActivity() {
                                 imageView.rotation = (-it.rotationDegrees).toFloat()
                             }
                             ?: Log.e(LOGGING_TAG, "Couldn't capture photo.")
+                }
+        photoResult
+                .toBitmap(scaled(scaleFactor = 0.25f))
+                .whenAvailable { photo ->
+                    photo
+                            ?.let {
+                                Log.i(LOGGING_TAG, "New photo added to ArrayList. Bitmap length: ${it.bitmap.byteCount}")
+                                val name = "foto$i"
+                                localSaveInApp(name,it.bitmap)
+                                bitmapGroup.add(name)
+                            }
+                            ?: Log.e(LOGGING_TAG, "Couldn't add photo.")
                 }
     }
 
