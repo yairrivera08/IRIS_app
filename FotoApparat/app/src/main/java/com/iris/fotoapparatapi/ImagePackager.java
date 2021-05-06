@@ -14,6 +14,7 @@ public class ImagePackager {
     private int IMAGE_TOTAL = DefaultConfiguration.DEFAULT_NUM_OF_IMAGES;
     private int mImagenesProcesadas;
     private final ArrayList<Bitmap> mImagesToProcess;
+    private final ArrayList<String> mImageNames;
     private ArrayList<ProcessedPackage> mProcessedResult;
     private static final int BLOCKING_QUEUE_CAPACITY = DefaultConfiguration.DEFAULT_BLOCKING_QUEUE_SIZE;
     private final MyBlockingQueue mBlockingQueue = new MyBlockingQueue(BLOCKING_QUEUE_CAPACITY);
@@ -21,9 +22,10 @@ public class ImagePackager {
     private ImageWrapper mImageWrapper;
     private long mStartTimestamp;
 
-    public ImagePackager(int totalImages, ArrayList<Bitmap> images){
+    public ImagePackager(int totalImages, ArrayList<Bitmap> images, ArrayList<String> names){
         IMAGE_TOTAL = totalImages;
         mImagesToProcess = images;
+        mImageNames = names;
     }
     public Observable<ArrayList<ProcessedPackage>> procesar(){
         return Observable.fromCallable(
@@ -63,7 +65,7 @@ public class ImagePackager {
     }
     private void iniciarProcesamiento(final int index) {
         new Thread(()->{
-            mImageWrapper = new ImageWrapper(mImagesToProcess.get(index));
+            mImageWrapper = new ImageWrapper(mImagesToProcess.get(index),mImageNames.get(index),index);
             mBlockingQueue.put(mImageWrapper);
         }).start();
     }

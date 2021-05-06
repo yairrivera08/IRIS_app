@@ -99,10 +99,12 @@
         <Button
             android:id="@+id/procesar"
             android:text="Procesar Imagenes"
+            android:enabled="false"
             android:layout_width="120dp"
             android:layout_height="75dp"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="30dp"
+            android:layout_marginRight="20dp"
             tools:ignore="ContentDescription,RtlHardcoded"/>
 
     </FrameLayout>

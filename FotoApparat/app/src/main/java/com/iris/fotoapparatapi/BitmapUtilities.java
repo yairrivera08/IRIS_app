@@ -22,8 +22,7 @@ public class BitmapUtilities {
         width = bmpOg.getWidth();
         height = bmpOg.getHeight();
     }
-    private void spliceChannels(){
-
+    public void spliceChannels(){
         rMap = spliceR();
         gMap = spliceG();
         bMap = spliceB();

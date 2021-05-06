@@ -119,9 +119,14 @@ class MainActivity : AppCompatActivity() {
                                 val name = "foto$i"
                                 localSaveInApp(name,it.bitmap)
                                 bitmapGroup.add(name)
+                                habilitarBotonProcesado()
                             }
                             ?: Log.e(LOGGING_TAG, "Couldn't add photo.")
                 }
+    }
+
+    private fun habilitarBotonProcesado() {
+        procesar.isEnabled = true
     }
 
     private fun changeCamera(): () -> Unit = {
