@@ -3,6 +3,7 @@ package com.iris.fotoapparatapi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.FileNotFoundException;
@@ -30,6 +32,7 @@ public class activity_Procesando extends AppCompatActivity {
     private ProgressBar pb;
     private ArrayList<ProcessedPackage> mPostProcessing = new ArrayList<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class activity_Procesando extends AppCompatActivity {
         mPackager = new ImagePackager(this.getImageCount(),stack, bmps,ctx);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void doImageProcessing(){
         BloquearInteraccion();
         mDisposable = mPackager.procesar()
@@ -80,10 +84,12 @@ public class activity_Procesando extends AppCompatActivity {
         mPostProcessing = result;
         PermitirInteraccion();
         for(int i=0;i<result.size();i++){
-            String name = result.get(i).getName();
-            long time = result.get(i).getTimeTaken();
-            int id = result.get(i).getId();
-            Log.d("ACTIVITY_PROCESANDO","Tiempo de procesamiento para el Bitmap["+name+"] ID=["+id+"] => "+ time);
+            ProcessedPackage pp = result.get(i);
+            String name = pp.getName();
+            long time = pp.getTimeTaken();
+            int id = pp.getId();
+            int umbral = pp.getmThreshold();
+            Log.d("ACTIVITY_PROCESANDO","Tiempo de procesamiento para el Bitmap["+name+"] ID=["+id+"] Umbral de Otsu["+umbral+"]=> "+ time);
         }
         Toast.makeText(ctx,"PROCESAMIENTO DE "+result.size()+" fotos Terminado",Toast.LENGTH_LONG).show();
         if(mDisposable != null){

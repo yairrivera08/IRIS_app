@@ -2,6 +2,9 @@ package com.iris.fotoapparatapi;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -30,6 +33,7 @@ public class ImagePackager {
         mImageNames = names;
         mCtx = ctx;
     }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public Observable<ArrayList<ProcessedPackage>> procesar(){
         return Observable.fromCallable(
                 () -> {
@@ -66,6 +70,7 @@ public class ImagePackager {
                 }
         );
     }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void iniciarProcesamiento(final int index) {
         new Thread(()->{
             mImageWrapper = new ImageWrapper(mImagesToProcess.get(index),mImageNames.get(index),index,mCtx);
@@ -76,7 +81,7 @@ public class ImagePackager {
         new Thread(()->{
             ImageWrapper result= mBlockingQueue.take();
             synchronized (LOCK){
-                if(result.isDone() && result.ismRed() && result.ismGreen() && result.ismBlue() && result.ismAlpha()){
+                if(result.isDone() && result.ismRed() && result.ismGreen() && result.ismBlue() && result.ismAlpha() && result.ismGray() && result.ismBinary()){
                     result.setTimeTaken(System.currentTimeMillis() - mStartTimestamp);
                     mProcessedResult.add(result.getWrapped());
                 }

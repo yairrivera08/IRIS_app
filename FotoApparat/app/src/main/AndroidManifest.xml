@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FotoapparatAPI">
-        <activity android:name=".activity_Procesando"></activity>
+        <activity android:name=".activity_Procesando"
+            android:hardwareAccelerated="true"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

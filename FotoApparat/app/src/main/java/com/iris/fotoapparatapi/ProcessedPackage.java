@@ -21,9 +21,10 @@ public class ProcessedPackage {
     private Bitmap greenChannel;
     private Bitmap blueChannel;
     private Bitmap alphaChannel;
-    private Bitmap mask;
+    private Bitmap masked;
     private Bitmap binary;
-    private Bitmap greyScale;
+    private Bitmap grayScale;
+    private int mThreshold;
     private long mTimeTaken;
 
     public ProcessedPackage(int id, String name, Context ctx) {
@@ -68,10 +69,6 @@ public class ProcessedPackage {
         this.name = name;
     }
 
-    public Bitmap getRedChannel() {
-        return redChannel;
-    }
-
     public Boolean setRedChannel(Bitmap redChannel) {
         if(redChannel != null) {
             this.redChannel = redChannel;
@@ -85,10 +82,6 @@ public class ProcessedPackage {
             return false;
         }
 
-    }
-
-    public Bitmap getGreenChannel() {
-        return greenChannel;
     }
 
     public Boolean setGreenChannel(Bitmap greenChannel) {
@@ -105,10 +98,6 @@ public class ProcessedPackage {
         }
     }
 
-    public Bitmap getBlueChannel() {
-        return blueChannel;
-    }
-
     public Boolean setBlueChannel(Bitmap blueChannel) {
         if(blueChannel != null) {
             this.blueChannel = blueChannel;
@@ -121,10 +110,6 @@ public class ProcessedPackage {
         }else{
             return false;
         }
-    }
-
-    public Bitmap getAlphaChannel() {
-        return alphaChannel;
     }
 
     public Boolean setAlphaChannel(Bitmap alphaChannel) {
@@ -141,28 +126,49 @@ public class ProcessedPackage {
         }
     }
 
-    public Bitmap getMask() {
-        return mask;
+    public Bitmap getMasked() {
+        return masked;
     }
 
-    public void setMask(Bitmap mask) {
-        this.mask = mask;
+    public void setMasked(Bitmap masked) {
+        this.masked = masked;
     }
 
-    public Bitmap getBinary() {
-        return binary;
+
+    public Boolean setGrayScale(Bitmap grayScale) {
+        if(grayScale != null) {
+            this.grayScale = grayScale;
+            if(this.grayScale != null){
+                saveImage(this.grayScale,"GrayScale");
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
-    public void setBinary(Bitmap binary) {
-        this.binary = binary;
+    public Boolean setBinary(Bitmap binary){
+        if(binary != null) {
+            this.binary = binary;
+            if(this.binary != null){
+                saveImage(this.binary,"Binarized");
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
-    public Bitmap getGreyScale() {
-        return greyScale;
+    public int getmThreshold() {
+        return mThreshold;
     }
 
-    public void setGreyScale(Bitmap greyScale) {
-        this.greyScale = greyScale;
+    public void setmThreshold(int mThreshold) {
+        this.mThreshold = mThreshold;
     }
 
     public long getTimeTaken() {

@@ -2,7 +2,10 @@ package com.iris.fotoapparatapi;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 public class ImageWrapper {
 
@@ -11,11 +14,13 @@ public class ImageWrapper {
     private boolean mGreen = false;
     private boolean mBlue = false;
     private boolean mAlpha= false;
+    private boolean mGray= false;
+    private boolean mBinary= false;
     private ProcessedPackage mProcessedPack;
     private BitmapUtilities bmpUtils;
     private int mFinishedChannels;
 
-
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public ImageWrapper(Bitmap bitmap, String name, int index, Context ctx) {
         mFinishedChannels = 0;
         mProcessedPack = new ProcessedPackage(index,name,ctx);
@@ -25,18 +30,21 @@ public class ImageWrapper {
         setGreenChannel();
         setBlueChannel();
         setAlphaChannel();
+        setGrayScale();
+        setBinarized();
         checkFinished();
     }
 
     private void checkFinished() {
         while(!mFinished){
-            if(mFinishedChannels == 4){
+            if(mFinishedChannels == 6){
                 //Log.d("IMAGEWRAPPER","HILO ["+Thread.currentThread()+"] mFinishedChannels="+mFinishedChannels);
                 mFinished = true;
             }
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setRedChannel() {
         if(mProcessedPack.setRedChannel(bmpUtils.spliceR())){
             mFinishedChannels++;
@@ -44,6 +52,7 @@ public class ImageWrapper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setGreenChannel() {
         if(mProcessedPack.setGreenChannel(bmpUtils.spliceG())){
             mFinishedChannels++;
@@ -51,6 +60,7 @@ public class ImageWrapper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setBlueChannel() {
         if(mProcessedPack.setBlueChannel(bmpUtils.spliceB())){
             mFinishedChannels++;
@@ -58,10 +68,29 @@ public class ImageWrapper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setAlphaChannel() {
         if(mProcessedPack.setAlphaChannel(bmpUtils.spliceA())){
             mFinishedChannels++;
             mAlpha = true;
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void setGrayScale() {
+        if(mProcessedPack.setGrayScale(bmpUtils.getGrayscale())){
+            mFinishedChannels++;
+            mGray = true;
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void setBinarized() {
+        bmpUtils.createThreshold();
+        mProcessedPack.setmThreshold(bmpUtils.getThreshold());
+        if(mProcessedPack.setBinary(bmpUtils.doBinarization())){
+            mFinishedChannels++;
+            mBinary = true;
         }
     }
 
@@ -80,6 +109,10 @@ public class ImageWrapper {
     public boolean ismAlpha() {
         return mAlpha;
     }
+
+    public boolean ismGray(){return mGray;}
+
+    public boolean ismBinary(){return mBinary;}
 
     public boolean isDone() {
         return mFinished;

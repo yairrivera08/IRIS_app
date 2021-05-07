@@ -3,6 +3,7 @@ package com.iris.fotoapparatapi;
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity() {
 
                                 imageView.setImageBitmap(it.bitmap)
                                 imageView.rotation = (-it.rotationDegrees).toFloat()
+                                //it.bitmap.recycle()
                             }
                             ?: Log.e(LOGGING_TAG, "Couldn't capture photo.")
                 }
@@ -117,12 +119,36 @@ class MainActivity : AppCompatActivity() {
                             ?.let {
                                 Log.i(LOGGING_TAG, "New photo added to ArrayList. Bitmap length: ${it.bitmap.byteCount}")
                                 val name = "foto$i"
-                                localSaveInApp(name,it.bitmap)
+                                val bitmapRotated : Bitmap = girarBitmap(it.bitmap)
+                                it.bitmap.recycle()
+                                localSaveInApp(name,bitmapRotated)
                                 bitmapGroup.add(name)
                                 habilitarBotonProcesado()
+                                bitmapRotated.recycle()
                             }
                             ?: Log.e(LOGGING_TAG, "Couldn't add photo.")
                 }
+    }
+
+    private fun girarBitmap(bitmapOrg: Bitmap): Bitmap {
+        val width = bitmapOrg.width
+        val height = bitmapOrg.height
+        val matrix = Matrix()
+
+        matrix.postRotate(90F)
+
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true)
+
+        val rotatedBitmap = Bitmap.createBitmap(
+            scaledBitmap,
+            0,
+            0,
+            scaledBitmap.width,
+            scaledBitmap.height,
+            matrix,
+            true
+        )
+        return rotatedBitmap
     }
 
     private fun habilitarBotonProcesado() {
