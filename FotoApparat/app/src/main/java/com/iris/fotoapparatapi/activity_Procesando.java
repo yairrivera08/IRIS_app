@@ -1,7 +1,5 @@
 package com.iris.fotoapparatapi;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class activity_Procesando extends AppCompatActivity {
     private Disposable mDisposable;
     private ArrayList<String> bmps = new ArrayList<>();
     private ProgressBar pb;
+    private ArrayList<ProcessedPackage> mPostProcessing = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class activity_Procesando extends AppCompatActivity {
     }
 
     public void doSetUp(){
-        mPackager = new ImagePackager(this.getImageCount(),stack, bmps);
+        mPackager = new ImagePackager(this.getImageCount(),stack, bmps,ctx);
     }
 
     public void doImageProcessing(){
@@ -75,9 +77,19 @@ public class activity_Procesando extends AppCompatActivity {
     }
 
     public void ProcesamientoTerminado(ArrayList<ProcessedPackage> result) {
+        mPostProcessing = result;
         PermitirInteraccion();
-        //TODO: regresar conteo de imagenes procesadas y cambiar visibilidad del progreso.
-
+        for(int i=0;i<result.size();i++){
+            String name = result.get(i).getName();
+            long time = result.get(i).getTimeTaken();
+            int id = result.get(i).getId();
+            Log.d("ACTIVITY_PROCESANDO","Tiempo de procesamiento para el Bitmap["+name+"] ID=["+id+"] => "+ time);
+        }
+        Toast.makeText(ctx,"PROCESAMIENTO DE "+result.size()+" fotos Terminado",Toast.LENGTH_LONG).show();
+        if(mDisposable != null){
+            mDisposable.dispose();
+        }
+        //TODO: mostrar imagenes con opcion de abrir nueva actividad para mostrar el detalle de las capas
     }
 
     private Bitmap recuperarBitmap(String name){
