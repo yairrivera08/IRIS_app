@@ -18,7 +18,8 @@ import java.util.ArrayList;
 public class BitmapUtilities {
     private Bitmap bitmap;
     private int mOtsuThreshold;
-    private Bitmap grayScaleMap;
+    private Bitmap mThresholded;
+    private int[][] pxl;
 
     private final int width;
     private final int height;
@@ -27,10 +28,30 @@ public class BitmapUtilities {
         this.bitmap = bmpOg;
         width = bmpOg.getWidth();
         height = bmpOg.getHeight();
+        pxl = new int[width][height];
     }
 
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public Bitmap doMaskWithThreshold(){
+        Bitmap bmpMasked = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+//        int[][] ogValues = new int[width][height];
+        int[][] binValues = new int[width][height];
+        for(int x = 0;x<width;x++){
+            for(int y=0;y<height;y++){
+                int colorPixel = bitmap.getPixel(x, y);
+                int binaryPixel = mThresholded.getPixel(x, y);
+                System.out.println("PIXEL["+x+"]["+y+"]="+binaryPixel);
+                if(binaryPixel==-1){
+                    bmpMasked.setPixel(x,y,colorPixel);
+                }else{
+                    bmpMasked.setPixel(x,y,0);
+                }
+            }
+        }
+        return bmpMasked;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -39,7 +60,17 @@ public class BitmapUtilities {
         int[] histo = new int[256];
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                histo[luminance(bitmap.getPixel(x, y))]++;
+
+                int colorPixel = bitmap.getPixel(x, y);
+
+                int alpha = Color.alpha(colorPixel);
+                int R = Color.red(colorPixel);
+                int G = Color.green(colorPixel);
+                int B = Color.blue(colorPixel);
+                int gray = (int) ( (0.2126 * R) + (0.7152 * G) + (0.0722 * B) ); // (int) ( (0.299 * R) + (0.587 * G) + (0.114 * B) );
+
+                pxl[x][y] = gray;
+                histo[luminance(colorPixel)]++;
             }
         }
         return histo;
@@ -96,20 +127,26 @@ public class BitmapUtilities {
         Bitmap bmpBinarized = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         for(int x=0;x<width;x++) {
             for(int y=0;y<height;y++) {
-                int value = grayScaleMap.getPixel(x,y);
+                int fnpx = pxl[x][y];
+                int colorPixel = bitmap.getPixel(x,y);
+                int A = Color.alpha(colorPixel);
                 // Calculate the brightness
-                if(value>mOtsuThreshold)
+                //System.out.println("VALOR DE PIXEL=["+fnpx+"] UMBRAL OTSU = ["+mOtsuThreshold+"]");
+                if(fnpx>mOtsuThreshold)
                 {
                     // Return the result
-                    bmpBinarized.setPixel(x, y, 255);
+                    fnpx = 255;
+                    bmpBinarized.setPixel(x, y, Color.argb(A,fnpx,fnpx,fnpx));
                 }
                 else
                 {
                     // Return the result
-                    bmpBinarized.setPixel(x, y, 0);
+                    fnpx = 0;
+                    bmpBinarized.setPixel(x, y, Color.argb(A,fnpx,fnpx,fnpx));
                 }
             }
         }
+        mThresholded = bmpBinarized;
         return bmpBinarized;
     }
 
@@ -127,7 +164,6 @@ public class BitmapUtilities {
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
         c.drawBitmap(bitmap, 0, 0, paint);
-        this.grayScaleMap = bmpGrayscale;
         return bmpGrayscale;
     }
 

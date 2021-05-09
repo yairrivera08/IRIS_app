@@ -31,6 +31,7 @@ public class ProcessedPackage {
         this.id = id;
         this.name = name;
         this.mCtx = ctx;
+
     }
 
     private void saveImage(Bitmap bitmap, @NonNull String scanName){
@@ -130,8 +131,18 @@ public class ProcessedPackage {
         return masked;
     }
 
-    public void setMasked(Bitmap masked) {
-        this.masked = masked;
+    public Boolean setMasked(Bitmap masked) {
+        if(masked != null) {
+            this.masked = masked;
+            if(this.masked != null){
+                saveImage(this.masked,"Masked Image");
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
 
@@ -177,5 +188,10 @@ public class ProcessedPackage {
 
     public void setTimeTaken(long mTimeTaken) {
         this.mTimeTaken = mTimeTaken;
+    }
+
+    public Boolean setOriginal(Bitmap bitmap) {
+        saveImage(bitmap,"Original");
+        return  true;
     }
 }

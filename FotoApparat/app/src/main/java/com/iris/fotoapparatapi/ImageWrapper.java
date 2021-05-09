@@ -10,12 +10,14 @@ import androidx.annotation.RequiresApi;
 public class ImageWrapper {
 
     private boolean mFinished = false;
+    private boolean mOrig = false;
     private boolean mRed = false;
     private boolean mGreen = false;
     private boolean mBlue = false;
     private boolean mAlpha= false;
     private boolean mGray= false;
     private boolean mBinary= false;
+    private boolean mMasked= false;
     private ProcessedPackage mProcessedPack;
     private BitmapUtilities bmpUtils;
     private int mFinishedChannels;
@@ -26,21 +28,31 @@ public class ImageWrapper {
         mProcessedPack = new ProcessedPackage(index,name,ctx);
         bmpUtils = new BitmapUtilities(bitmap);
 
+        setOriginal();
         setRedChannel();
         setGreenChannel();
         setBlueChannel();
         setAlphaChannel();
         setGrayScale();
         setBinarized();
+        setMasked();
         checkFinished();
     }
 
     private void checkFinished() {
         while(!mFinished){
-            if(mFinishedChannels == 6){
+            if(mFinishedChannels == 8){
                 //Log.d("IMAGEWRAPPER","HILO ["+Thread.currentThread()+"] mFinishedChannels="+mFinishedChannels);
                 mFinished = true;
             }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void setOriginal() {
+        if(mProcessedPack.setOriginal(bmpUtils.getBitmap())){
+            mFinishedChannels++;
+            mOrig = true;
         }
     }
 
@@ -94,6 +106,16 @@ public class ImageWrapper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void setMasked() {
+        if(bmpUtils.getThreshold() != 0) {
+            if (mProcessedPack.setMasked(bmpUtils.doMaskWithThreshold())) {
+                mFinishedChannels++;
+                mMasked = true;
+            }
+        }
+    }
+
     public boolean ismRed() {
         return mRed;
     }
@@ -113,6 +135,8 @@ public class ImageWrapper {
     public boolean ismGray(){return mGray;}
 
     public boolean ismBinary(){return mBinary;}
+
+    public boolean ismMasked(){return mMasked;}
 
     public boolean isDone() {
         return mFinished;

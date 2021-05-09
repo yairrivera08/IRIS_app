@@ -81,7 +81,7 @@ public class ImagePackager {
         new Thread(()->{
             ImageWrapper result= mBlockingQueue.take();
             synchronized (LOCK){
-                if(result.isDone() && result.ismRed() && result.ismGreen() && result.ismBlue() && result.ismAlpha() && result.ismGray() && result.ismBinary()){
+                if(result.isDone() && result.ismRed() && result.ismGreen() && result.ismBlue() && result.ismAlpha() && result.ismGray() && result.ismBinary() && result.ismMasked()){
                     result.setTimeTaken(System.currentTimeMillis() - mStartTimestamp);
                     mProcessedResult.add(result.getWrapped());
                 }
