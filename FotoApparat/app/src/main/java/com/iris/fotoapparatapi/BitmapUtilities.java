@@ -43,7 +43,7 @@ public class BitmapUtilities {
             for(int y=0;y<height;y++){
                 int colorPixel = bitmap.getPixel(x, y);
                 int binaryPixel = mThresholded.getPixel(x, y);
-                System.out.println("PIXEL["+x+"]["+y+"]="+binaryPixel);
+                //System.out.println("PIXEL["+x+"]["+y+"]="+binaryPixel);
                 if(binaryPixel==-1){
                     bmpMasked.setPixel(x,y,colorPixel);
                 }else{

@@ -11,12 +11,51 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:max="100"
         android:backgroundTint="@color/white"
-        android:indeterminateTint="#1a09d6"
+        android:indeterminate="true"
+        android:indeterminateTint="#FF023C"
+        android:max="100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/GrupoNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <EditText
+            android:id="@+id/EditNombreSesion"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:hint="Nombre de la sesion"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+        <Button
+            android:id="@+id/Guardaryprocesar"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Guardar y Procesar"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/NomActivity"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Imagenes Procesadas"
+
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/GrupoNombre"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerImagenes"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/NomActivity"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

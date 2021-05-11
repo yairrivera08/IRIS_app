@@ -21,18 +21,21 @@ public class ImageWrapper {
     private ProcessedPackage mProcessedPack;
     private BitmapUtilities bmpUtils;
     private int mFinishedChannels;
+    private String mSessionName;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public ImageWrapper(Bitmap bitmap, String name, int index, Context ctx) {
+    public ImageWrapper(Bitmap bitmap, String name, int index, Context ctx, String sesion) {
         mFinishedChannels = 0;
         mProcessedPack = new ProcessedPackage(index,name,ctx);
         bmpUtils = new BitmapUtilities(bitmap);
+        mSessionName = sesion;
 
+        setSession();
         setOriginal();
+        setAlphaChannel();
         setRedChannel();
         setGreenChannel();
         setBlueChannel();
-        setAlphaChannel();
         setGrayScale();
         setBinarized();
         setMasked();
@@ -46,6 +49,11 @@ public class ImageWrapper {
                 mFinished = true;
             }
         }
+    }
+
+    private void setSession(){
+        Log.d("IMAGE_WRAPPER","NOMBRE DE SESION=>"+mSessionName);
+        mProcessedPack.setSessionName(mSessionName);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -148,5 +156,12 @@ public class ImageWrapper {
 
     public void setTimeTaken(long l) {
         mProcessedPack.setTimeTaken(l);
+    }
+    public void setSessionName(String nombre) {
+        this.mSessionName = nombre;
+    }
+
+    public String getmSessionName() {
+        return mSessionName;
     }
 }

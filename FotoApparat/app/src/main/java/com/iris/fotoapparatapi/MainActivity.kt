@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                     photo
                             ?.let {
                                 Log.i(LOGGING_TAG, "New photo added to ArrayList. Bitmap length: ${it.bitmap.byteCount}")
-                                val name = "foto$i"
+                                val name = "IMG_$i"
                                 val bitmapRotated : Bitmap = girarBitmap(it.bitmap)
                                 it.bitmap.recycle()
                                 localSaveInApp(name,bitmapRotated)
@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-private const val LOGGING_TAG = "Fotoapparat Example"
+private const val LOGGING_TAG = "IRIS3D"
 
 private sealed class Camera(
         val lensPosition: LensPositionSelector,

@@ -1,27 +1,39 @@
 package com.iris.fotoapparatapi;
 
+import android.app.AlertDialog;
+import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class activity_Procesando extends AppCompatActivity {
+public class activity_Procesando extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
 
 
     private Context ctx = null;
@@ -31,6 +43,10 @@ public class activity_Procesando extends AppCompatActivity {
     private ArrayList<String> bmps = new ArrayList<>();
     private ProgressBar pb;
     private ArrayList<ProcessedPackage> mPostProcessing = new ArrayList<>();
+    private RecyclerViewAdapter adapter;
+    private RecyclerView recyclerView;
+    private EditText nombre;
+    private Button comenzar;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -40,13 +56,27 @@ public class activity_Procesando extends AppCompatActivity {
         ctx = getApplicationContext();
         pb = findViewById(R.id.progressBar);
         pb.setVisibility(View.INVISIBLE);
-        doSetUp();
-        //Obtener bitmaps
-        bmps = (ArrayList<String>) getIntent().getSerializableExtra("bitmaps");
-        contarBmps();
-        doSetUp();
-        doImageProcessing();
+
+        comenzar = (Button) findViewById(R.id.Guardaryprocesar);
+        nombre = (EditText) findViewById(R.id.EditNombreSesion);
+        comenzar.setOnClickListener(v -> nombrarSesion());
+        // set up the RecyclerView
+        recyclerView = findViewById(R.id.RecyclerImagenes);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter = new RecyclerViewAdapter(this, mPostProcessing);
+        adapter.setClickListener(this::onItemClick);
+        recyclerView.setAdapter(adapter);
+        //TODO: abrir nueva actividad para mostrar el detalle de las capas
     }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.i("ACTIVITY_PROCESANDO RECYCLER-ITEMCLICK", "You clicked " + adapter.getItem(position).getName() + ", which is at cell position " + position);
+        Intent i = new Intent(ctx,PostProcessingDetailedView.class);
+        i.putExtra("PostProcessed",adapter.getItem(position));
+        startActivity(i);
+    }
+
     public void addToStack(Bitmap bmp){
         stack.add(bmp);
     }
@@ -56,7 +86,10 @@ public class activity_Procesando extends AppCompatActivity {
     }
 
     public void doSetUp(){
-        mPackager = new ImagePackager(this.getImageCount(),stack, bmps,ctx);
+        String sesion = nombre.getText().toString();
+        mPackager = new ImagePackager(this.getImageCount(),stack, bmps,ctx,sesion);
+        Log.d("ACTIVITY_PROCESANDO DOSETUP","NOMBRE DE SESION=>"+nombre.getText().toString());
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -82,6 +115,16 @@ public class activity_Procesando extends AppCompatActivity {
 
     public void ProcesamientoTerminado(ArrayList<ProcessedPackage> result) {
         mPostProcessing = result;
+        Log.d("ACTIVITY_PROCESANDO","NOMBRE DE LA SESION=>"+mPostProcessing.get(0).getmSessionName());
+        mPostProcessing.sort(Comparator.comparing(ProcessedPackage::getId));
+        recyclerView.setAdapter(null);
+        recyclerView.setLayoutManager(null);
+        adapter = new RecyclerViewAdapter(this, mPostProcessing);
+        adapter.setClickListener(this::onItemClick);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter.notifyDataSetChanged();
+
         PermitirInteraccion();
         for(int i=0;i<result.size();i++){
             ProcessedPackage pp = result.get(i);
@@ -95,7 +138,7 @@ public class activity_Procesando extends AppCompatActivity {
         if(mDisposable != null){
             mDisposable.dispose();
         }
-        //TODO: mostrar imagenes con opcion de abrir nueva actividad para mostrar el detalle de las capas
+
     }
 
     private Bitmap recuperarBitmap(String name){
@@ -121,6 +164,22 @@ public class activity_Procesando extends AppCompatActivity {
             }
         }else{
             Log.d("ACTIVITY_PROCESANDO","No se recibieron bitmaps");
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void nombrarSesion(){
+        if(!nombre.getText().toString().isEmpty()) {
+            Toast.makeText(ctx,"Comenzando procesamiento de las imagenes en hilos", Toast.LENGTH_LONG).show();
+            comenzar.setEnabled(false);
+            nombre.setEnabled(false);
+            doSetUp();
+            //Obtener bitmaps
+            bmps = (ArrayList<String>) getIntent().getSerializableExtra("bitmaps");
+            contarBmps();
+            doSetUp();
+            doImageProcessing();
+        }else{
+            Toast.makeText(ctx,"Se requiere un nombre para la sesion antes de comenzar el guardado",Toast.LENGTH_LONG).show();
         }
     }
 }

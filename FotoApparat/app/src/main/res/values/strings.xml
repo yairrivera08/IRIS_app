@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">FotoapparatAPI</string>
+    <string name="app_name">IRIS-SCANNER</string>
+    <string name="thumbnail_image">Thumnbnail Image</string>
 </resources>

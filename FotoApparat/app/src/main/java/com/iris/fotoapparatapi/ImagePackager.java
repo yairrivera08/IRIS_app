@@ -3,6 +3,8 @@ package com.iris.fotoapparatapi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.text.Editable;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -26,12 +28,14 @@ public class ImagePackager {
     private ImageWrapper mImageWrapper;
     private long mStartTimestamp;
     private Context mCtx;
+    private String mSessionName;
 
-    public ImagePackager(int totalImages, ArrayList<Bitmap> images, ArrayList<String> names, Context ctx){
+    public ImagePackager(int totalImages, ArrayList<Bitmap> images, ArrayList<String> names, Context ctx, String sesion){
         IMAGE_TOTAL = totalImages;
         mImagesToProcess = images;
         mImageNames = names;
         mCtx = ctx;
+        mSessionName = sesion;
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Observable<ArrayList<ProcessedPackage>> procesar(){
@@ -73,7 +77,8 @@ public class ImagePackager {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void iniciarProcesamiento(final int index) {
         new Thread(()->{
-            mImageWrapper = new ImageWrapper(mImagesToProcess.get(index),mImageNames.get(index),index,mCtx);
+            mImageWrapper = new ImageWrapper(mImagesToProcess.get(index),mImageNames.get(index),index,mCtx, mSessionName);
+            Log.d("IMAGE_PACKAGER","NOMBRE DE SESION=>"+mSessionName);
             mBlockingQueue.put(mImageWrapper);
         }).start();
     }
@@ -89,5 +94,13 @@ public class ImagePackager {
                 LOCK.notifyAll();
             }
         }).start();
+    }
+
+    public void setSessionName(String nombre) {
+        this.mSessionName = nombre;
+    }
+
+    public String getmSessionName() {
+        return mSessionName;
     }
 }
