@@ -6,45 +6,97 @@
     android:layout_height="match_parent"
     tools:context=".PostProcessingDetailedView">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/ImagenOriginal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_camera" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/SesionOrigen"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:hint="Sesion de Origen"/>
-            <TextView
-                android:id="@+id/NombreImagen"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:hint="Nombre de la imagen"/>
-            <TextView
-                android:id="@+id/TiempoTotal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:hint="Tiempo total de procesamiento"/>
-            <TextView
-                android:id="@+id/Umbral"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:hint="Umbral de Otsu"/>
-        </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/SplitChannelsRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
 
+            <ImageView
+                android:id="@+id/ImagenOriginal"
+                android:layout_width="300dp"
+                android:layout_height="500dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_camera" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Datos de la fotografía"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <TextView
+                    android:id="@+id/SesionOrigen"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Sesion de Origen"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:id="@+id/Ubicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Ubicacion de la imagen" />
+
+                <TextView
+                    android:id="@+id/NombreImagen"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Nombre de la imagen" />
+
+                <TextView
+                    android:id="@+id/TiempoTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Tiempo total de procesamiento" />
+
+                <TextView
+                    android:id="@+id/Umbral"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Umbral de Otsu" />
+
+                <TextView
+                    android:id="@+id/Dimensiones"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Dimensiones " />
+
+                <TextView
+                    android:id="@+id/Factor"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:hint="Factor usado para escalado" />
+
+                <Button
+                    android:id="@+id/AbrirGaleria"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Abrir galería"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bitmaps procesados resultantes"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/SplitChannelsRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="1800dp" />
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

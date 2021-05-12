@@ -24,16 +24,16 @@ public class ProcessedPackage implements Serializable {
     private String name;
     //private ArrayList<Uri> imgUri = new ArrayList<>(9);
     private ArrayList<String> imgRPath = new ArrayList<>(9);
-    private Context mCtx;
+    //private final Context mCtx;
     private int mThreshold;
     private long mTimeTaken;
     private String mSessionName;
     private String mRelativePath;
 
-    public ProcessedPackage(int id, String name, Context ctx) {
+    public ProcessedPackage(int id, String name) {
         this.id = id;
         this.name = name;
-        this.mCtx = ctx;
+        //this.mCtx = ctx;
         /*for(int i = 0;i<8;i++){
             imgUri.add(Uri.EMPTY);
         }*/
@@ -45,7 +45,7 @@ public class ProcessedPackage implements Serializable {
         OutputStream fos = null;
 
         try {
-            ContentResolver resolver = mCtx.getContentResolver();
+            ContentResolver resolver = MyApp.getmAppContext().getContentResolver();
             ContentValues contentValues = new ContentValues();
             String fileName = name + "_" + scanName;
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
@@ -53,7 +53,7 @@ public class ProcessedPackage implements Serializable {
             contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, mRelativePath);
             Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             //imgUri.add(x, imageUri);
-            imgRPath.add(getPath(mCtx,imageUri));
+            imgRPath.add(getPath(MyApp.getmAppContext(),imageUri));
             fos = resolver.openOutputStream(imageUri);
             saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
@@ -207,7 +207,7 @@ public class ProcessedPackage implements Serializable {
         return mSessionName;
     }
 
-    public static String getPath( Context context, Uri uri ) {
+    public String getPath( Context context, Uri uri ) {
         String result = null;
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = context.getContentResolver( ).query( uri, proj, null, null, null );

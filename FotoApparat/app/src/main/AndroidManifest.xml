@@ -8,6 +8,7 @@
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="true" />
+    
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="sensorPortrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FotoapparatAPI">
+        android:theme="@style/Theme.FotoapparatAPI"
+        android:name=".MyApp">
         <activity android:name=".PostProcessingDetailedView"></activity>
         <activity
             android:name=".activity_Procesando"

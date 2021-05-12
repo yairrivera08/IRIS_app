@@ -66,15 +66,19 @@ public class activity_Procesando extends AppCompatActivity implements RecyclerVi
         adapter = new RecyclerViewAdapter(this, mPostProcessing);
         adapter.setClickListener(this::onItemClick);
         recyclerView.setAdapter(adapter);
-        //TODO: abrir nueva actividad para mostrar el detalle de las capas
+
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.i("ACTIVITY_PROCESANDO RECYCLER-ITEMCLICK", "You clicked " + adapter.getItem(position).getName() + ", which is at cell position " + position);
-        Intent i = new Intent(ctx,PostProcessingDetailedView.class);
-        i.putExtra("PostProcessed",adapter.getItem(position));
-        startActivity(i);
+        try {
+            Log.i("ACTIVITY_PROCESANDO RECYCLER-ITEMCLICK", "You clicked " + adapter.getItem(position).getName() + ", which is at cell position " + position);
+            Intent i = new Intent(ctx, PostProcessingDetailedView.class);
+            i.putExtra("PostProcessed", adapter.getItem(position));
+            startActivity(i);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void addToStack(Bitmap bmp){

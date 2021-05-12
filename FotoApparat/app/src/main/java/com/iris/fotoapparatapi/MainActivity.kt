@@ -20,6 +20,7 @@ import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.roundToInt
 
@@ -91,11 +92,13 @@ class MainActivity : AppCompatActivity() {
                 .autoFocus()
                 .takePicture()
 
-        /*photoResult
-                .saveToFile(File(
+        photoResult
+                .saveToFile(
+                    File(
                         getExternalFilesDir("photos"),
                         "photo.jpg"
-                ))*/
+                )
+                )
 
         photoResult
                 .toBitmap(scaled(scaleFactor = 0.25f))

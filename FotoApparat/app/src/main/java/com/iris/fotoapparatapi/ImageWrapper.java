@@ -26,7 +26,7 @@ public class ImageWrapper {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public ImageWrapper(Bitmap bitmap, String name, int index, Context ctx, String sesion) {
         mFinishedChannels = 0;
-        mProcessedPack = new ProcessedPackage(index,name,ctx);
+        mProcessedPack = new ProcessedPackage(index,name);
         bmpUtils = new BitmapUtilities(bitmap);
         mSessionName = sesion;
 

@@ -62,6 +62,9 @@ public class DetailedRecyclerViewAdapter extends RecyclerView.Adapter<DetailedRe
             case 5:
                 name = "Otsu Thresholded Mask";
                 break;
+            case 6:
+                name = "Masked Result";
+                break;
         }
         holder.mNameField.setText(name);
         Glide.with(mContext)
@@ -90,8 +93,8 @@ public class DetailedRecyclerViewAdapter extends RecyclerView.Adapter<DetailedRe
 
         ViewHolder(View itemView) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.ChannelView);
-            mNameField = itemView.findViewById(R.id.ChannelImage);
+            mImageView = itemView.findViewById(R.id.ChannelImage);
+            mNameField = itemView.findViewById(R.id.ChannelName);
             itemView.setOnClickListener(this);
         }
 
