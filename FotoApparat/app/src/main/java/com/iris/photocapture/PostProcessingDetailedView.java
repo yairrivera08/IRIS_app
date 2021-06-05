@@ -1,29 +1,22 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.iris.photocapture.threading.ProcessedPackage;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class PostProcessingDetailedView extends AppCompatActivity {
 
@@ -57,13 +50,11 @@ public class PostProcessingDetailedView extends AppCompatActivity {
         ubicacion = findViewById(R.id.Ubicacion);
         galeria = findViewById(R.id.AbrirGaleria);
         /*
-        * 0 = Alpha
-        * 1 = Red
-        * 2 = Green
-        * 3 = Blue
-        * 4 = Grayscale
-        * 5 = Binary
-        * 6 = Masked Image
+        * 0 = Red: Brinda datos del detalle de iluminacion
+        * 1 = Grayscale = Da una vista previa de como se maneja la posible binarizacion
+        * Según el objeto y el fondo las mascaras A y B pueden destacar la silueta o el objeto aislado del entorno.
+        * 2 = Masked Image A
+        * 3 = Masked Image B
         * */
         bmpsPath = pp.getImgRPath();
 

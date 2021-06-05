@@ -1,19 +1,17 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture.threading;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.text.Editable;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
+import com.iris.photocapture.DefaultConfiguration;
 
-import io.reactivex.Flowable;
+import java.util.ArrayList;
+
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ImagePackager {
 
@@ -36,6 +34,7 @@ public class ImagePackager {
         mImageNames = names;
         mCtx = ctx;
         mSessionName = sesion;
+        //Log.d("IMAGE_PACKAGER","NOMBRE DE SESION"+mSessionName);
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Observable<ArrayList<ProcessedPackage>> procesar(){
@@ -78,7 +77,7 @@ public class ImagePackager {
     private void iniciarProcesamiento(final int index) {
         new Thread(()->{
             mImageWrapper = new ImageWrapper(mImagesToProcess.get(index),mImageNames.get(index),index,mCtx, mSessionName);
-            Log.d("IMAGE_PACKAGER","NOMBRE DE SESION=>"+mSessionName);
+            //Log.d("IMAGE_PACKAGER","NOMBRE DE SESION=>"+mSessionName);
             mBlockingQueue.put(mImageWrapper);
         }).start();
     }
@@ -86,9 +85,11 @@ public class ImagePackager {
         new Thread(()->{
             ImageWrapper result= mBlockingQueue.take();
             synchronized (LOCK){
-                if(result.isDone() && result.ismRed() && result.ismGreen() && result.ismBlue() && result.ismAlpha() && result.ismGray() && result.ismBinary() && result.ismMasked()){
+                //if(result.isDone() && result.ismRed() && result.ismGreen() && result.ismBlue() && result.ismAlpha() && result.ismGray() && result.ismBinary() && result.ismMasked()){
+                if(result.ismRed() && result.ismGray() && result.ismBinary()){
                     result.setTimeTaken(System.currentTimeMillis() - mStartTimestamp);
                     mProcessedResult.add(result.getWrapped());
+                    java.lang.System.gc();
                 }
                 mImagenesProcesadas++;
                 LOCK.notifyAll();

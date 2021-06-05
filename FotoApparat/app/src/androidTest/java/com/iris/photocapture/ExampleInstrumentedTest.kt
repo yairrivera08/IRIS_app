@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi
+package com.iris.photocapture
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

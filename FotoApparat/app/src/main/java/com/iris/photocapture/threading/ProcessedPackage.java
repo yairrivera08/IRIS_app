@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture.threading;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -13,6 +13,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
+import com.iris.photocapture.MyApp;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,9 +32,13 @@ public class ProcessedPackage implements Serializable {
     private String mSessionName;
     private String mRelativePath;
 
-    public ProcessedPackage(int id, String name) {
+    public ProcessedPackage(int id, String name, String sesion) {
         this.id = id;
         this.name = name;
+        //Log.d("PROCESSED_PACKAGE","ID["+id+"] NOMBRE DE SESION "+sesion);
+        mRelativePath = "DCIM/IRIS3D/" + sesion + "/";
+        mSessionName=sesion;
+        //Log.d("PROCESSED_PACKAGE","ID["+id+"] RELATIVE PATH "+mRelativePath);
         //this.mCtx = ctx;
         /*for(int i = 0;i<8;i++){
             imgUri.add(Uri.EMPTY);
@@ -51,6 +57,7 @@ public class ProcessedPackage implements Serializable {
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
             contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, mRelativePath);
+
             Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             //imgUri.add(x, imageUri);
             imgRPath.add(getPath(MyApp.getmAppContext(),imageUri));
@@ -89,23 +96,23 @@ public class ProcessedPackage implements Serializable {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Boolean setOriginal(Bitmap bitmap) {
-        saveImage(bitmap, "Original", 0);
+        saveImage(bitmap,"Original", 0);
         setThumbnail(bitmap);
         return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setThumbnail(Bitmap bitmap) {
-        int width = bitmap.getWidth() / 5;
-        int height = bitmap.getHeight() / 5;
+        int width = bitmap.getWidth() / 6;
+        int height = bitmap.getHeight() / 6;
         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap, width, height);
-        saveImage(thumbnail, "Thumbnail", 1);
+        saveImage(bitmap,"Thumbnail", 1);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Boolean setAlphaChannel(Bitmap alphaChannel) {
         if (alphaChannel != null) {
-            saveImage(alphaChannel, "ALPHA_CHANNEL", 2);
+            saveImage(alphaChannel,"ALPHA_CHANNEL", 2);
             return true;
         } else {
             return false;
@@ -115,7 +122,7 @@ public class ProcessedPackage implements Serializable {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Boolean setRedChannel(Bitmap redChannel) {
         if (redChannel != null) {
-            saveImage(redChannel, "RED_CHANNEL", 3);
+            saveImage(redChannel,"RED_CHANNEL", 3);
             return true;
         } else {
             return false;
@@ -128,7 +135,7 @@ public class ProcessedPackage implements Serializable {
     public Boolean setGreenChannel(Bitmap greenChannel) {
         if (greenChannel != null) {
 
-            saveImage(greenChannel, "GREEN_CHANNEL", 4);
+            saveImage(greenChannel,"GREEN_CHANNEL", 4);
             return true;
         } else {
             return false;
@@ -140,7 +147,7 @@ public class ProcessedPackage implements Serializable {
     public Boolean setBlueChannel(Bitmap blueChannel) {
         if (blueChannel != null) {
 
-            saveImage(blueChannel, "BLUE_CHANNEL", 5);
+            saveImage(blueChannel,"BLUE_CHANNEL", 5);
             return true;
         } else {
             return false;
@@ -151,7 +158,7 @@ public class ProcessedPackage implements Serializable {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Boolean setGrayScale(Bitmap grayScale) {
         if (grayScale != null) {
-            saveImage(grayScale, "GrayScale", 6);
+            saveImage(grayScale,"GrayScale", 6);
             return true;
         } else {
             return false;
@@ -159,10 +166,11 @@ public class ProcessedPackage implements Serializable {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public Boolean setBinary(Bitmap binary) {
+    public Boolean setBinary(Bitmap[] binary) {
         if (binary != null) {
 
-            saveImage(binary, "Binarized", 7);
+            saveImage(binary[0],"MaskedA", 7);
+            saveImage(binary[1],"MaskedB", 8);
             return true;
         } else {
             return false;
@@ -173,7 +181,7 @@ public class ProcessedPackage implements Serializable {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Boolean setMasked(Bitmap masked) {
         if (masked != null) {
-            saveImage(masked, "Masked Image", 8);
+            saveImage(masked,"Masked Image", 8);
             return true;
         } else {
             return false;
@@ -200,7 +208,7 @@ public class ProcessedPackage implements Serializable {
     public void setSessionName(String nombre) {
         this.mSessionName = nombre;
         mRelativePath = "DCIM/IRIS3D/" + mSessionName + "/";
-        Log.d("PROCESSED_PACKAGE", "NOMBRE DE SESION=>" + mSessionName);
+        //Log.d("PROCESSED_PACKAGE", "NOMBRE DE SESION=>" + mSessionName);
     }
 
     public String getmSessionName() {

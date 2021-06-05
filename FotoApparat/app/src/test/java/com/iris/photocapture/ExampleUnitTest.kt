@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi
+package com.iris.photocapture
 
 import org.junit.Test
 

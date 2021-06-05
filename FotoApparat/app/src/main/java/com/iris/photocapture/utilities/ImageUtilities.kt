@@ -1,8 +1,7 @@
-package com.iris.fotoapparatapi
+package com.iris.photocapture.utilities
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.util.Log
 
 class ImageUtilities(val bmp: Bitmap) {
     var width: Int = bmp.width

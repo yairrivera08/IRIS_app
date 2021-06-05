@@ -1,17 +1,12 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture;
 
-import android.app.AlertDialog;
-import android.app.Application;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,9 +16,11 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.iris.photocapture.threading.ImagePackager;
+import com.iris.photocapture.threading.ProcessedPackage;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -47,6 +44,7 @@ public class activity_Procesando extends AppCompatActivity implements RecyclerVi
     private RecyclerView recyclerView;
     private EditText nombre;
     private Button comenzar;
+    private Bitmap aux;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -72,7 +70,7 @@ public class activity_Procesando extends AppCompatActivity implements RecyclerVi
     @Override
     public void onItemClick(View view, int position) {
         try {
-            Log.i("ACTIVITY_PROCESANDO RECYCLER-ITEMCLICK", "You clicked " + adapter.getItem(position).getName() + ", which is at cell position " + position);
+            //Log.i("ACTIVITY_PROCESANDO RECYCLER-ITEMCLICK", "You clicked " + adapter.getItem(position).getName() + ", which is at cell position " + position);
             Intent i = new Intent(ctx, PostProcessingDetailedView.class);
             i.putExtra("PostProcessed", adapter.getItem(position));
             startActivity(i);
@@ -92,7 +90,7 @@ public class activity_Procesando extends AppCompatActivity implements RecyclerVi
     public void doSetUp(){
         String sesion = nombre.getText().toString();
         mPackager = new ImagePackager(this.getImageCount(),stack, bmps,ctx,sesion);
-        Log.d("ACTIVITY_PROCESANDO DOSETUP","NOMBRE DE SESION=>"+nombre.getText().toString());
+        //Log.d("ACTIVITY_PROCESANDO DOSETUP","NOMBRE DE SESION=>"+nombre.getText().toString());
 
     }
 
@@ -119,7 +117,7 @@ public class activity_Procesando extends AppCompatActivity implements RecyclerVi
 
     public void ProcesamientoTerminado(ArrayList<ProcessedPackage> result) {
         mPostProcessing = result;
-        Log.d("ACTIVITY_PROCESANDO","NOMBRE DE LA SESION=>"+mPostProcessing.get(0).getmSessionName());
+        //Log.d("ACTIVITY_PROCESANDO","NOMBRE DE LA SESION=>"+mPostProcessing.get(0).getmSessionName());
         mPostProcessing.sort(Comparator.comparing(ProcessedPackage::getId));
         recyclerView.setAdapter(null);
         recyclerView.setLayoutManager(null);
@@ -159,13 +157,19 @@ public class activity_Procesando extends AppCompatActivity implements RecyclerVi
 
             Log.d("ACTIVITY_PROCESANDO","Se recibieron "+bmps.size()+" bitmaps");
             for (int i = 0; i < bmps.size(); i++) {
-                Log.d("ACTIVITY_PROCESANDO", "Nombre del Bitmap["+i+"]="+bmps.get(i));
-                Bitmap x = recuperarBitmap(bmps.get(i));
-                if(x != null){
-                    Log.d("ACTIVITY_PROCESANDO", "TAMAÑO DEL BITMAP["+i+"]"+x.getByteCount());
-                    addToStack(x);
+                //Log.d("ACTIVITY_PROCESANDO", "Nombre del Bitmap["+i+"]="+bmps.get(i));
+                try {
+                    aux =  BitmapFactory.decodeStream(ctx.openFileInput(bmps.get(i)));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                if(aux != null){
+                    //Log.d("ACTIVITY_PROCESANDO", "TAMAÑO DEL BITMAP["+i+"]"+x.getByteCount());
+                    addToStack(aux);
+                    java.lang.System.gc();
                 }
             }
+
         }else{
             Log.d("ACTIVITY_PROCESANDO","No se recibieron bitmaps");
         }

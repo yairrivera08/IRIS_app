@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture.threading;
 
 import java.util.LinkedList;
 import java.util.Queue;

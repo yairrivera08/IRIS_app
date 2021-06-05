@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture;
 
 import android.content.Context
 import android.content.Intent

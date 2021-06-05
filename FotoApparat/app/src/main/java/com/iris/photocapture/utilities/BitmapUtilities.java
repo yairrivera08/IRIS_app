@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,16 +7,13 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 public class BitmapUtilities {
-    private Bitmap bitmap;
+    private Bitmap bitmap,procesado,procesadodos;
     private int mOtsuThreshold;
     private Bitmap mThresholded;
     private int[][] pxl;
@@ -29,6 +26,14 @@ public class BitmapUtilities {
         width = bmpOg.getWidth();
         height = bmpOg.getHeight();
         pxl = new int[width][height];
+        procesado = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        procesadodos = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    }
+    public void disposeBitmaps(){
+        bitmap.recycle();
+        procesado.recycle();
+        procesadodos.recycle();
+        //java.lang.System.gc();
     }
 
     public Bitmap getBitmap() {
@@ -122,32 +127,40 @@ public class BitmapUtilities {
         return mOtsuThreshold;
     }
 
-    public Bitmap doBinarization(){
-
-        Bitmap bmpBinarized = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        for(int x=0;x<width;x++) {
-            for(int y=0;y<height;y++) {
-                int fnpx = pxl[x][y];
-                int colorPixel = bitmap.getPixel(x,y);
-                int A = Color.alpha(colorPixel);
-                // Calculate the brightness
-                //System.out.println("VALOR DE PIXEL=["+fnpx+"] UMBRAL OTSU = ["+mOtsuThreshold+"]");
-                if(fnpx>mOtsuThreshold)
-                {
-                    // Return the result
-                    fnpx = 255;
-                    bmpBinarized.setPixel(x, y, Color.argb(A,fnpx,fnpx,fnpx));
-                }
-                else
-                {
-                    // Return the result
-                    fnpx = 0;
-                    bmpBinarized.setPixel(x, y, Color.argb(A,fnpx,fnpx,fnpx));
+    public Bitmap[] doBinarization(){
+        try {
+            //Bitmap bmpBinarized = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    int fnpx = pxl[x][y];
+                    int colorPixel = bitmap.getPixel(x, y);
+                    int A = Color.alpha(colorPixel);
+                    int r = Color.red(colorPixel);
+                    int g = Color.green(colorPixel);
+                    int b = Color.blue(colorPixel);
+                    // Calculate the brightness
+                    //System.out.println("VALOR DE PIXEL=["+fnpx+"] UMBRAL OTSU = ["+mOtsuThreshold+"]");
+                    if (fnpx > mOtsuThreshold) {
+                        // Return the result
+                        fnpx = 0;
+                        procesado.setPixel(x, y, Color.argb(A, fnpx, fnpx, fnpx));
+                        procesadodos.setPixel(x, y, Color.argb(A, r, g, b));
+                    } else {
+                        // Return the result
+                        fnpx = 0;
+                        procesado.setPixel(x, y, Color.argb(A, r, g, b));
+                        procesadodos.setPixel(x, y, Color.argb(A, fnpx, fnpx, fnpx));
+                    }
                 }
             }
+            return new Bitmap[]{procesado, procesadodos};
+            //return procesado;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
         }
-        mThresholded = bmpBinarized;
-        return bmpBinarized;
+        //mThresholded = bmpBinarized;
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -156,15 +169,15 @@ public class BitmapUtilities {
         height = bitmap.getHeight();
         width = bitmap.getWidth();
 
-        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bmpGrayscale);
+        //Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(procesado);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
         c.drawBitmap(bitmap, 0, 0, paint);
-        return bmpGrayscale;
+        return procesado;
     }
 
     public void setBitmap(Bitmap bitmap) {
@@ -173,7 +186,7 @@ public class BitmapUtilities {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Bitmap spliceR(){
-        Bitmap bmpR = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        //Bitmap bmpR = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
         for (int x = 0; x < bitmap.getWidth(); x++)
         {
             for (int y = 0; y < bitmap.getHeight(); y++)
@@ -182,10 +195,10 @@ public class BitmapUtilities {
                 int A = (color >> 24) & 0xff; // or color >>> 24
                 int R = (color >> 16) & 0xff;
                 int mask = Color.argb(A,R,0,0);
-                bmpR.setPixel(x, y, mask);
+                procesado.setPixel(x, y, mask);
             }
         }
-        return bmpR;
+        return procesado;
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Bitmap spliceG(){

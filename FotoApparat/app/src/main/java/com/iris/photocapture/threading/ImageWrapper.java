@@ -1,4 +1,4 @@
-package com.iris.fotoapparatapi;
+package com.iris.photocapture.threading;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,6 +6,8 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+
+import com.iris.photocapture.utilities.BitmapUtilities;
 
 public class ImageWrapper {
 
@@ -26,25 +28,25 @@ public class ImageWrapper {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public ImageWrapper(Bitmap bitmap, String name, int index, Context ctx, String sesion) {
         mFinishedChannels = 0;
-        mProcessedPack = new ProcessedPackage(index,name);
         bmpUtils = new BitmapUtilities(bitmap);
-        mSessionName = sesion;
-
-        setSession();
+        //mSessionName = sesion;
+        //Log.d("IMAGE_WRAPPER","NOMBRE DE SESION"+sesion);
+        mProcessedPack = new ProcessedPackage(index,name,sesion);
+        //setSession();
         setOriginal();
-        setAlphaChannel();
+        //setAlphaChannel();
         setRedChannel();
-        setGreenChannel();
-        setBlueChannel();
+        //setGreenChannel();
+        //setBlueChannel();
         setGrayScale();
         setBinarized();
-        setMasked();
-        checkFinished();
+        //setMasked();
+        //checkFinished();
     }
 
     private void checkFinished() {
         while(!mFinished){
-            if(mFinishedChannels == 8){
+            if(mFinishedChannels == 4){
                 //Log.d("IMAGEWRAPPER","HILO ["+Thread.currentThread()+"] mFinishedChannels="+mFinishedChannels);
                 mFinished = true;
             }
@@ -52,7 +54,7 @@ public class ImageWrapper {
     }
 
     private void setSession(){
-        Log.d("IMAGE_WRAPPER","NOMBRE DE SESION=>"+mSessionName);
+        //Log.d("IMAGE_WRAPPER","NOMBRE DE SESION=>"+mSessionName);
         mProcessedPack.setSessionName(mSessionName);
     }
 
@@ -110,6 +112,7 @@ public class ImageWrapper {
         mProcessedPack.setmThreshold(bmpUtils.getThreshold());
         if(mProcessedPack.setBinary(bmpUtils.doBinarization())){
             mFinishedChannels++;
+            bmpUtils.disposeBitmaps();
             mBinary = true;
         }
     }
