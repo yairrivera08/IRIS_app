@@ -1,4 +1,4 @@
-package com.iris.photocapture;
+package com.iris.photocapture
 
 import android.content.Context
 import android.content.Intent
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fotoapparat: Fotoapparat
     private lateinit var cameraZoom: Zoom.VariableZoom
     private var bitmapGroup: ArrayList<String> = ArrayList<String>()
-    private var i : Int = 0
+    private var i: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +49,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         fotoapparat = Fotoapparat(
-                context = this,
-                view = cameraView,
-                focusView = focusView,
-                logger = logcat(),
-                lensPosition = activeCamera.lensPosition,
-                cameraConfiguration = activeCamera.configuration,
-                cameraErrorCallback = { Log.e(LOGGING_TAG, "Camera error: ", it) }
+            context = this,
+            view = cameraView,
+            focusView = focusView,
+            logger = logcat(),
+            lensPosition = activeCamera.lensPosition,
+            cameraConfiguration = activeCamera.configuration,
+            cameraErrorCallback = { Log.e(LOGGING_TAG, "Camera error: ", it) }
         )
 
         capture onClick takePicture()
@@ -64,73 +64,72 @@ class MainActivity : AppCompatActivity() {
         procesar onClick { iniciarProcesamiento() }
     }
 
-    private fun localSaveInApp(fileName:String, bmp:Bitmap){
+    private fun localSaveInApp(fileName: String, bmp: Bitmap) {
         val stream = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.PNG,90,stream)
-        val file:String = fileName
-        val data:ByteArray = stream.toByteArray()
+        bmp.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        val file: String = fileName
+        val data: ByteArray = stream.toByteArray()
         val fileOutputStream: FileOutputStream
         try {
             fileOutputStream = openFileOutput(file, Context.MODE_PRIVATE)
             fileOutputStream.write(data)
             i++
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     private fun iniciarProcesamiento() {
-
         val intent = Intent(this, activity_Procesando::class.java).apply {
-            putExtra("bitmaps",bitmapGroup)
+            putExtra("bitmaps", bitmapGroup)
         }
         startActivity(intent)
     }
 
     private fun takePicture(): () -> Unit = {
         val photoResult = fotoapparat
-                .autoFocus()
-                .takePicture()
+            .autoFocus()
+            .takePicture()
 
         photoResult
-                .saveToFile(
-                    File(
-                        getExternalFilesDir("photos"),
-                        "photo.jpg"
+            .saveToFile(
+                File(
+                    getExternalFilesDir("photos"),
+                    "photo.jpg"
                 )
-                )
+            )
 
         photoResult
-                .toBitmap(scaled(scaleFactor = 0.25f))
-                .whenAvailable { photo ->
-                    photo
-                            ?.let {
-                                Log.i(LOGGING_TAG, "New photo captured. Bitmap length: ${it.bitmap.byteCount}")
+            .toBitmap(scaled(scaleFactor = 0.25f))
+            .whenAvailable { photo ->
+                photo
+                    ?.let {
+                        Log.i(LOGGING_TAG, "New photo captured. Bitmap length: ${it.bitmap.byteCount}")
 
-                                val imageView = findViewById<ImageView>(R.id.result)
+                        val imageView = findViewById<ImageView>(R.id.result)
 
-                                imageView.setImageBitmap(it.bitmap)
-                                imageView.rotation = (-it.rotationDegrees).toFloat()
-                                //it.bitmap.recycle()
-                            }
-                            ?: Log.e(LOGGING_TAG, "Couldn't capture photo.")
-                }
+                        imageView.setImageBitmap(it.bitmap)
+                        imageView.rotation = (-it.rotationDegrees).toFloat()
+                        // it.bitmap.recycle()
+                    }
+                    ?: Log.e(LOGGING_TAG, "Couldn't capture photo.")
+            }
         photoResult
-                .toBitmap(scaled(scaleFactor = 0.25f))
-                .whenAvailable { photo ->
-                    photo
-                            ?.let {
-                                Log.i(LOGGING_TAG, "New photo added to ArrayList. Bitmap length: ${it.bitmap.byteCount}")
-                                val name = "IMG_$i"
-                                val bitmapRotated : Bitmap = girarBitmap(it.bitmap)
-                                it.bitmap.recycle()
-                                localSaveInApp(name,bitmapRotated)
-                                bitmapGroup.add(name)
-                                habilitarBotonProcesado()
-                                bitmapRotated.recycle()
-                            }
-                            ?: Log.e(LOGGING_TAG, "Couldn't add photo.")
-                }
+            .toBitmap(scaled(scaleFactor = 0.25f))
+            .whenAvailable { photo ->
+                photo
+                    ?.let {
+                        Log.i(LOGGING_TAG, "New photo added to ArrayList. Bitmap length: ${it.bitmap.byteCount}")
+                        val name = "IMG_$i"
+                        val bitmapRotated: Bitmap = girarBitmap(it.bitmap)
+                        it.bitmap.recycle()
+                        localSaveInApp(name, bitmapRotated)
+                        bitmapGroup.add(name)
+                        habilitarBotonProcesado()
+                        bitmapRotated.recycle()
+                    }
+                    ?: Log.e(LOGGING_TAG, "Couldn't add photo.")
+            }
     }
 
     private fun girarBitmap(bitmapOrg: Bitmap): Bitmap {
@@ -165,8 +164,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         fotoapparat.switchTo(
-                lensPosition = activeCamera.lensPosition,
-                cameraConfiguration = activeCamera.configuration
+            lensPosition = activeCamera.lensPosition,
+            cameraConfiguration = activeCamera.configuration
         )
 
         adjustViewsVisibility()
@@ -178,16 +177,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleFlash(): (CompoundButton, Boolean) -> Unit = { _, isChecked ->
         fotoapparat.updateConfiguration(
-                UpdateConfiguration(
-                        flashMode = if (isChecked) {
-                            firstAvailable(
-                                    torch(),
-                                    off()
-                            )
-                        } else {
-                            off()
-                        }
-                )
+            UpdateConfiguration(
+                flashMode = if (isChecked) {
+                    firstAvailable(
+                        torch(),
+                        off()
+                    )
+                } else {
+                    off()
+                }
+            )
         )
 
         Log.i(LOGGING_TAG, "Flash is now ${if (isChecked) "on" else "off"}")
@@ -220,17 +219,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun adjustViewsVisibility() {
         fotoapparat.getCapabilities()
-                .whenAvailable { capabilities ->
-                    capabilities
-                            ?.let {
-                                (it.zoom as? Zoom.VariableZoom)
-                                        ?.let { zoom -> setupZoom(zoom) }
-                                        ?: run { zoomSeekBar.visibility = View.GONE }
+            .whenAvailable { capabilities ->
+                capabilities
+                    ?.let {
+                        (it.zoom as? Zoom.VariableZoom)
+                            ?.let { zoom -> setupZoom(zoom) }
+                            ?: run { zoomSeekBar.visibility = View.GONE }
 
-                                torchSwitch.visibility = if (it.flashModes.contains(Flash.Torch)) View.VISIBLE else View.GONE
-                            }
-                            ?: Log.e(LOGGING_TAG, "Couldn't obtain capabilities.")
-                }
+                        torchSwitch.visibility = if (it.flashModes.contains(Flash.Torch)) View.VISIBLE else View.GONE
+                    }
+                    ?: Log.e(LOGGING_TAG, "Couldn't obtain capabilities.")
+            }
 
         switchCamera.visibility = if (fotoapparat.isAvailable(front())) View.VISIBLE else View.GONE
     }
@@ -254,42 +253,42 @@ class MainActivity : AppCompatActivity() {
 private const val LOGGING_TAG = "IRIS3D"
 
 private sealed class Camera(
-        val lensPosition: LensPositionSelector,
-        val configuration: CameraConfiguration
+    val lensPosition: LensPositionSelector,
+    val configuration: CameraConfiguration
 ) {
 
     object Back : Camera(
-            lensPosition = back(),
-            configuration = CameraConfiguration(
-                    previewResolution = firstAvailable(
-                            wideRatio(highestResolution()),
-                            standardRatio(highestResolution())
-                    ),
-                    previewFpsRange = highestFps(),
-                    flashMode = off(),
-                    focusMode = firstAvailable(
-                            continuousFocusPicture(),
-                            autoFocus()
-                    ),
-                    frameProcessor = {
-                        // Do something with the preview frame
-                    }
-            )
+        lensPosition = back(),
+        configuration = CameraConfiguration(
+            previewResolution = firstAvailable(
+                wideRatio(highestResolution()),
+                standardRatio(highestResolution())
+            ),
+            previewFpsRange = highestFps(),
+            flashMode = off(),
+            focusMode = firstAvailable(
+                continuousFocusPicture(),
+                autoFocus()
+            ),
+            frameProcessor = {
+                // Do something with the preview frame
+            }
+        )
     )
 
     object Front : Camera(
-            lensPosition = front(),
-            configuration = CameraConfiguration(
-                    previewResolution = firstAvailable(
-                            wideRatio(highestResolution()),
-                            standardRatio(highestResolution())
-                    ),
-                    previewFpsRange = highestFps(),
-                    flashMode = off(),
-                    focusMode = firstAvailable(
-                            fixed(),
-                            autoFocus()
-                    )
+        lensPosition = front(),
+        configuration = CameraConfiguration(
+            previewResolution = firstAvailable(
+                wideRatio(highestResolution()),
+                standardRatio(highestResolution())
+            ),
+            previewFpsRange = highestFps(),
+            flashMode = off(),
+            focusMode = firstAvailable(
+                fixed(),
+                autoFocus()
             )
+        )
     )
 }
